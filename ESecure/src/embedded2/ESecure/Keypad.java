@@ -17,6 +17,7 @@ public class Keypad extends Activity implements SensorListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		//changed this text
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_keypad);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
