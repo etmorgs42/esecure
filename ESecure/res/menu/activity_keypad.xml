@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/menu_settings">
+    </item>
+    <item android:id="@+id/color_settings" android:title="Pick Color">
+        <menu>
+            <item android:id="@+id/red" android:title="Red"/>
+            <item android:id="@+id/orange" android:title="Orange"/>
+            <item android:id="@+id/yellow" android:title="Yellow"/>
+            <item android:id="@+id/green" android:title="Green"/>
+            <item android:id="@+id/blue" android:title="Blue"/>
+            <item android:id="@+id/violet" android:title="Violet"/>
+        </menu>
+    </item>
+    
+    <item android:id="@+id/new_pass" android:title="Change Password">
+    </item>
+
+</menu>
