@@ -3,13 +3,13 @@ package embedded2.ESecure;
 import java.util.Date;
 
 public class Point {
-	int x,y;
-	long duration;
-	float pressure;
-	float majorAxis,minorAxis; //major and minor axes of touch ellipse
-	float orientation; //orientation of touch ellipse
-	Date start,end;
-	char keyPress;
+	private int x,y;
+	private long duration;
+	private float pressure;
+	private float majorAxis,minorAxis; //major and minor axes of touch ellipse
+	private float orientation; //orientation of touch ellipse
+	private Date start,end;
+	private char keyPress;
 	
 	Point(int x, int y, Date start){
 		this.x = x;
