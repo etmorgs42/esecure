@@ -1,9 +1,10 @@
 package embedded2.ESecure;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Point {
-	private int x,y;
+public class Point implements Serializable{
+	private float x,y;
 	private long duration;
 	private float pressure;
 	private float majorAxis,minorAxis; //major and minor axes of touch ellipse
@@ -11,7 +12,7 @@ public class Point {
 	private Date start,end;
 	private char keyPress;
 	
-	Point(int x, int y, Date start){
+	Point(float x, float y, Date start){
 		this.x = x;
 		this.y = y;
 		this.start = start;
@@ -39,8 +40,8 @@ public class Point {
 		duration = end.getTime() - start.getTime();
 	}
 	
-	int getX(){ return x; }
-	int getY(){ return y; }
+	float getX(){ return x; }
+	float getY(){ return y; }
 	float getMajorAxis(){ return majorAxis; }
 	float getMinorAxis(){ return minorAxis; }
 	float getOrientation(){ return orientation; }

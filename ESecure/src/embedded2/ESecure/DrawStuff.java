@@ -29,6 +29,9 @@ public class DrawStuff extends View implements OnTouchListener {
 	Display display;
 	Point size;
 	int width, height;
+	float lastx,lasty,x = 0.0f,y = 0.0f;
+	char keyChar;
+	Attempt newAttempt;
 	RectF rect;
 
 	public DrawStuff(Context context, Vibrator v) {
@@ -105,8 +108,8 @@ public class DrawStuff extends View implements OnTouchListener {
 
 		// Log.v
 		myPoint myPoint = new myPoint();
-		myPoint.x = event.getX();
-		myPoint.y = event.getY();
+		x = myPoint.x = event.getX();
+		y = myPoint.y = event.getY();
 		myPoint.r = r.nextInt(255);
 		myPoint.g = r.nextInt(255);
 		myPoint.b = r.nextInt(255);
@@ -118,55 +121,76 @@ public class DrawStuff extends View implements OnTouchListener {
 		rect = myOval(minor, major, event.getX(), event.getY());
 		Log.v("MAJOR/MINOR", "" + major + ":::" + minor);
 		invalidate();
-		calcButtons(event.getX(), event.getY());
-
+		keyChar = calcButtons(event.getX(), event.getY());
+		
+		if(keyChar == 'E'){
+			if(newAttempt != null){
+				
+			}
+		}else if(keyChar == 'x'){
+			
+		}
+		
 		return true;
 	}
 
-	private void calcButtons(float x, float y) {
+	private char calcButtons(float x, float y) {
 		// TODO Auto-generated method stub
 		int a = (int) x * 3 / width;
 
 		if (a == 0) {
 			if (y >= 0.5 * height && y < 0.6 * height) {
 				Log.v("BUTTONPRESSED", "1");
+				return '1';
 			}
 			if (y >= 0.6 * height && y < 0.7 * height) {
 				Log.v("BUTTONPRESSED", "4");
+				return '4';
 			}
 			if (y >= 0.7 * height && y < 0.8 * height) {
 				Log.v("BUTTONPRESSED", "7");
+				return '7';
 			}
 			if (y >= 0.8 * height && y < 0.9 * height) {
 				Log.v("BUTTONPRESSED", "BlankThing");
+				return 'x';
 			}
 		} else if (a == 1) {
 			if (y >= 0.5 * height && y < 0.6 * height) {
 				Log.v("BUTTONPRESSED", "2");
+				return '2';
 			}
 			if (y >= 0.6 * height && y < 0.7 * height) {
 				Log.v("BUTTONPRESSED", "5");
+				return '5';
 			}
 			if (y >= 0.7 * height && y < 0.8 * height) {
 				Log.v("BUTTONPRESSED", "8");
+				return '8';
 			}
 			if (y >= 0.8 * height && y < 0.9 * height) {
 				Log.v("BUTTONPRESSED", "0");
+				return '0';
 			}
 		} else if (a == 2) {
 			if (y >= 0.5 * height && y < 0.6 * height) {
 				Log.v("BUTTONPRESSED", "3");
+				return '3';
 			}
 			if (y >= 0.6 * height && y < 0.7 * height) {
 				Log.v("BUTTONPRESSED", "6");
+				return '6';
 			}
 			if (y >= 0.7 * height && y < 0.8 * height) {
 				Log.v("BUTTONPRESSED", "9");
+				return '9';
 			}
 			if (y >= 0.8 * height && y < 0.9 * height) {
 				Log.v("BUTTONPRESSED", "E");
+				return 'E';
 			}
 		}
+		return 'x';
 	}
 
 	class myPoint {
