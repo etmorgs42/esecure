@@ -1,6 +1,7 @@
 package embedded2.ESecure;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -11,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.os.Vibrator;
+import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -29,9 +31,15 @@ public class DrawStuff extends View implements OnTouchListener {
 	Display display;
 	Point size;
 	int width, height;
-	float lastx,lasty,x = 0.0f,y = 0.0f;
-	char keyChar;
+	float lastx = 0.0f,lasty = 0.0f,x = 0.0f,y = 0.0f;
+	float dist;
+	char keyChar,lastChar;
+	long lastTime;
+	int count;
+	float maxPressure, maxMajorAxis, maxMinorAxis,avgOrientation;
 	Attempt newAttempt;
+	TouchPoint newPoint;
+	Profile myProfile;
 	RectF rect;
 
 	public DrawStuff(Context context, Vibrator v) {
@@ -125,10 +133,48 @@ public class DrawStuff extends View implements OnTouchListener {
 		
 		if(keyChar == 'E'){
 			if(newAttempt != null){
-				
+				myProfile.add(newAttempt);
+				newAttempt = null;
+				lastx = 0;
+				lasty = 0;
 			}
 		}else if(keyChar == 'x'){
-			
+		}else{
+			if(lastx == 0 && lasty == 0){ //first point of attempt
+				lastx = x;
+				lasty = y;
+				lastChar = keyChar;
+				lastTime = System.currentTimeMillis();
+				count = 1;
+				maxPressure = event.getPressure();
+				maxMajorAxis = event.getTouchMajor();
+				maxMinorAxis = event.getTouchMinor();
+				avgOrientation = event.getOrientation();
+			}else{
+				dist = (float) Math.sqrt(lastx*lastx + lasty*lasty); //distance from original point
+				if(dist > 20 || lastChar != keyChar){ //distance is over threshold
+					newPoint = new TouchPoint(lastx,lasty,lastTime);
+					newPoint.setEnd(System.currentTimeMillis());
+					newPoint.setOrientation(avgOrientation);
+					newPoint.setPressure(maxPressure);
+					newPoint.setShape(maxMajorAxis, maxMinorAxis);
+					newPoint.setKey(keyChar);
+					lastx = x;
+					lasty = y;
+					lastChar = keyChar;
+					lastTime = System.currentTimeMillis();
+					maxPressure = event.getPressure();
+					maxMajorAxis = event.getTouchMajor();
+					maxMinorAxis = event.getTouchMinor();
+					avgOrientation = event.getOrientation();
+				}else{ //same point just update stats
+					maxPressure = Math.max(maxPressure, event.getPressure());
+					maxMajorAxis = Math.max(maxMajorAxis, event.getTouchMajor());
+					maxMinorAxis = Math.max(maxMinorAxis, event.getTouchMinor()); 
+					avgOrientation = (avgOrientation*count++ + event.getOrientation())/count;
+				}
+				
+			}
 		}
 		
 		return true;

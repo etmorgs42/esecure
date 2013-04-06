@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Attempt implements Serializable{
-	private ArrayList<Point> points;
+	private ArrayList<TouchPoint> points;
 	private ArrayList<Long> gaps;
 	private ArrayList<Character> code;
 	private int count;
@@ -19,8 +19,8 @@ public class Attempt implements Serializable{
 												// ellipse
 	private float stdOrientation; // orientation of touch ellipse
 
-	Attempt(Point first) {
-		points = new ArrayList<Point>();
+	Attempt(TouchPoint first) {
+		points = new ArrayList<TouchPoint>();
 		gaps = new ArrayList<Long>();
 		code = new ArrayList<Character>();
 		points.add(first);
@@ -28,10 +28,9 @@ public class Attempt implements Serializable{
 		count = 1;
 	}
 
-	void addPoint(Point newPoint) {
+	void addPoint(TouchPoint newPoint) {
 		points.add(newPoint);
-		gaps.add(new Long(points.get(count).getStart().getTime()
-				- points.get(count - 1).getStart().getTime()));
+		gaps.add(new Long(points.get(count).getStart()- points.get(count - 1).getStart()));
 		if (points.get(count) != points.get(count - 1)
 				|| gaps.get(count - 1) > 100) {
 			code.add(newPoint.getKey());
