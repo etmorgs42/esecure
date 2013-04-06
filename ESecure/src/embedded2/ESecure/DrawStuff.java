@@ -34,12 +34,15 @@ public class DrawStuff extends View implements OnTouchListener {
 	float lastx = 0.0f,lasty = 0.0f,x = 0.0f,y = 0.0f;
 	float dist;
 	char keyChar,lastChar;
+	int entryMode = 1;
 	long lastTime;
+	long lastE = 0;
 	int count;
 	float maxPressure, maxMajorAxis, maxMinorAxis,avgOrientation;
 	Attempt newAttempt;
 	TouchPoint newPoint;
 	Profile myProfile;
+	String enterCode;
 	RectF rect;
 
 	public DrawStuff(Context context, Vibrator v) {
@@ -55,6 +58,7 @@ public class DrawStuff extends View implements OnTouchListener {
 
 		display = wm.getDefaultDisplay();
 		display.getSize(size);
+		enterCode = "";
 		width = size.x;
 		height = size.y;
 		paint.setColor(Color.GREEN);
@@ -106,6 +110,7 @@ public class DrawStuff extends View implements OnTouchListener {
 		canvas.drawText("9", (float) (2 * width / 3 + .13 * width), (float) (height * .78), paint);
 		canvas.drawText("0", (float) (width / 3 + .13 * width), (float) (height * .88), paint);
 		canvas.drawText("E", (float) (2 * width / 3 + .13 * width), (float) (height * .88), paint);
+		canvas.drawText(enterCode,(float)(0.2*width),(float)(0.1*height),paint);
 		canvas.drawOval(rect, paint);
 	}
 
@@ -118,6 +123,7 @@ public class DrawStuff extends View implements OnTouchListener {
 		myPoint myPoint = new myPoint();
 		x = myPoint.x = event.getX();
 		y = myPoint.y = event.getY();
+		Log.v("TOUCH","x: " + x + " y: " + y);
 		myPoint.r = r.nextInt(255);
 		myPoint.g = r.nextInt(255);
 		myPoint.b = r.nextInt(255);
@@ -130,53 +136,127 @@ public class DrawStuff extends View implements OnTouchListener {
 		Log.v("MAJOR/MINOR", "" + major + ":::" + minor);
 		invalidate();
 		keyChar = calcButtons(event.getX(), event.getY());
+
 		
+
+		Log.v("COLLECTED", "entryMode = " + entryMode);
 		if(keyChar == 'E'){
-			if(newAttempt != null){
-				myProfile.add(newAttempt);
+			if(newAttempt != null && ((System.currentTimeMillis()) - lastE > 500)){
+				Log.v("COLLECTED","Attempt");
+				enterCode = newAttempt.getCode().toString();
+				Log.v("COLLECTED",enterCode);
+				lastE = System.currentTimeMillis();
+				if(myProfile == null){
+					myProfile = new Profile(newAttempt);
+				}else{
+					myProfile.add(newAttempt);
+				}
+				entryMode = 1;
+
 				newAttempt = null;
 				lastx = 0;
 				lasty = 0;
 			}
 		}else if(keyChar == 'x'){
+			Log.v("COLLECTED","None");
 		}else{
-			if(lastx == 0 && lasty == 0){ //first point of attempt
-				lastx = x;
-				lasty = y;
-				lastChar = keyChar;
-				lastTime = System.currentTimeMillis();
-				count = 1;
-				maxPressure = event.getPressure();
-				maxMajorAxis = event.getTouchMajor();
-				maxMinorAxis = event.getTouchMinor();
-				avgOrientation = event.getOrientation();
-			}else{
-				dist = (float) Math.sqrt(lastx*lastx + lasty*lasty); //distance from original point
-				if(dist > 20 || lastChar != keyChar){ //distance is over threshold
-					newPoint = new TouchPoint(lastx,lasty,lastTime);
-					newPoint.setEnd(System.currentTimeMillis());
-					newPoint.setOrientation(avgOrientation);
-					newPoint.setPressure(maxPressure);
-					newPoint.setShape(maxMajorAxis, maxMinorAxis);
-					newPoint.setKey(keyChar);
+			if(event.getAction() == MotionEvent.ACTION_UP && entryMode < 2){
+				entryMode = 0;
+			}
+			if(entryMode > 0){
+				if(lastx == 0 && lasty == 0){ //first point of attempt
 					lastx = x;
 					lasty = y;
 					lastChar = keyChar;
 					lastTime = System.currentTimeMillis();
+					count = 1;
 					maxPressure = event.getPressure();
 					maxMajorAxis = event.getTouchMajor();
 					maxMinorAxis = event.getTouchMinor();
 					avgOrientation = event.getOrientation();
-				}else{ //same point just update stats
-					maxPressure = Math.max(maxPressure, event.getPressure());
-					maxMajorAxis = Math.max(maxMajorAxis, event.getTouchMajor());
-					maxMinorAxis = Math.max(maxMinorAxis, event.getTouchMinor()); 
-					avgOrientation = (avgOrientation*count++ + event.getOrientation())/count;
+				}else{
+					float dx = x - lastx;
+					float dy = y - lasty;
+					dist = (float) Math.sqrt(dx*dx + dy*dy); //distance from original point
+					Log.v("TOUCH", "distance: " + dist);
+					if(dist > 50 || lastChar != keyChar){ //distance is over threshold
+						Log.v("COLLECTED", "Point");
+						entryMode++;
+						newPoint = new TouchPoint(lastx,lasty,lastTime);
+						newPoint.setEnd(System.currentTimeMillis());
+						newPoint.setOrientation(avgOrientation);
+						newPoint.setPressure(maxPressure);
+						newPoint.setShape(maxMajorAxis, maxMinorAxis);
+						newPoint.setKey(keyChar);
+						if(newAttempt == null){
+							newAttempt = new Attempt(0,newPoint);
+						}else{
+							newAttempt.addPoint(newPoint);
+						}
+						lastx = x;
+						lasty = y;
+						lastChar = keyChar;
+						lastTime = System.currentTimeMillis();
+						maxPressure = event.getPressure();
+						maxMajorAxis = event.getTouchMajor();
+						maxMinorAxis = event.getTouchMinor();
+						avgOrientation = event.getOrientation();
+					}else{ //same point just update stats
+						maxPressure = Math.max(maxPressure, event.getPressure());
+						maxMajorAxis = Math.max(maxMajorAxis, event.getTouchMajor());
+						maxMinorAxis = Math.max(maxMinorAxis, event.getTouchMinor()); 
+						avgOrientation = (avgOrientation*count++ + event.getOrientation())/count;
+					}
+
 				}
-				
+			}else{
+				if(lastx == 0 && lasty == 0){ //first point of attempt
+					lastx = x;
+					lasty = y;
+					lastChar = keyChar;
+					lastTime = System.currentTimeMillis();
+					count = 1;
+					maxPressure = event.getPressure();
+					maxMajorAxis = event.getTouchMajor();
+					maxMinorAxis = event.getTouchMinor();
+					avgOrientation = event.getOrientation();
+				}else{
+//					float dx = x - lastx;
+//					float dy = y - lasty;
+//					dist = (float) Math.sqrt(dx*dx + dy*dy); //distance from original point
+//					Log.v("TOUCH", "distance: " + dist);
+					if(event.getAction() == MotionEvent.ACTION_UP){ //distance is over threshold
+						Log.v("COLLECTED", "Point");
+						newPoint = new TouchPoint(lastx,lasty,lastTime);
+						newPoint.setEnd(System.currentTimeMillis());
+						newPoint.setOrientation(avgOrientation);
+						newPoint.setPressure(maxPressure);
+						newPoint.setShape(maxMajorAxis, maxMinorAxis);
+						newPoint.setKey(keyChar);
+						if(newAttempt == null){
+							newAttempt = new Attempt(1,newPoint);
+						}else{
+							newAttempt.addPoint(newPoint);
+						}
+						lastx = x;
+						lasty = y;
+						lastChar = keyChar;
+						lastTime = System.currentTimeMillis();
+						maxPressure = event.getPressure();
+						maxMajorAxis = event.getTouchMajor();
+						maxMinorAxis = event.getTouchMinor();
+						avgOrientation = event.getOrientation();
+					}else{ //same point just update stats
+						maxPressure = Math.max(maxPressure, event.getPressure());
+						maxMajorAxis = Math.max(maxMajorAxis, event.getTouchMajor());
+						maxMinorAxis = Math.max(maxMinorAxis, event.getTouchMinor()); 
+						avgOrientation = (avgOrientation*count++ + event.getOrientation())/count;
+					}
+
+				}
 			}
 		}
-		
+
 		return true;
 	}
 

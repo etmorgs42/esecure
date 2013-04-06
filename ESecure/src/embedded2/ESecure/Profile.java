@@ -22,6 +22,7 @@ public class Profile implements Serializable{
 	private float weightOrientation;
 
 	public Profile(Attempt first) {
+		history = new ArrayList<Attempt>();
 		history.add(first);
 		count = 1;
 	}

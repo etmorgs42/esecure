@@ -6,8 +6,8 @@ import java.util.ArrayList;
 public class Attempt implements Serializable{
 	private ArrayList<TouchPoint> points;
 	private ArrayList<Long> gaps;
-	private ArrayList<Character> code;
-	private int count;
+	private StringBuilder code;
+	private int count,mode;
 	private float avgDuration;
 	private float avgPressure;
 	private float avgMajorAxis, avgMinorAxis; // major and minor axes of touch
@@ -19,21 +19,23 @@ public class Attempt implements Serializable{
 												// ellipse
 	private float stdOrientation; // orientation of touch ellipse
 
-	Attempt(TouchPoint first) {
+	Attempt(int mode, TouchPoint first) {
 		points = new ArrayList<TouchPoint>();
 		gaps = new ArrayList<Long>();
-		code = new ArrayList<Character>();
+		code = new StringBuilder();
 		points.add(first);
-		code.add(Character.valueOf(first.getKey()));
+		code.append(first.getKey());
 		count = 1;
+		this.mode = mode;
 	}
 
 	void addPoint(TouchPoint newPoint) {
 		points.add(newPoint);
 		gaps.add(new Long(points.get(count).getStart()- points.get(count - 1).getStart()));
-		if (points.get(count) != points.get(count - 1)
-				|| gaps.get(count - 1) > 100) {
-			code.add(newPoint.getKey());
+		if(mode == 1){
+			code.append(newPoint.getKey());
+		}else if(points.get(count).getKey() != points.get(count - 1).getKey()){
+			code.append(newPoint.getKey());
 		}
 		count++;
 
@@ -92,7 +94,7 @@ public class Attempt implements Serializable{
 		return stdOrientation;
 	}
 
-	public ArrayList<Character> getCode() {
+	public StringBuilder getCode() {
 		return code;
 	}
 }
