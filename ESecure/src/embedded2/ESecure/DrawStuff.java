@@ -72,16 +72,15 @@ public class DrawStuff extends View implements OnTouchListener {
 		// r.nextInt(4)*64));
 		paint.setStrokeWidth(10);
 
-		for (myPoint myPoint : myPoints) {
-			// paint.setColor(Color.rgb(myPoint.r, myPoint.g, myPoint.b));
-			canvas.drawCircle(myPoint.x, myPoint.y, 5, paint);
-			// Log.d(TAG, "Painting: "+myPoint);
-		}
+//		for (myPoint myPoint : myPoints) {
+//			// paint.setColor(Color.rgb(myPoint.r, myPoint.g, myPoint.b));
+//			canvas.drawCircle(myPoint.x, myPoint.y, 5, paint);
+//			// Log.d(TAG, "Painting: "+myPoint);
+//		}
 
-		for (int i = 1; i < myPoints.size(); i++) {
-
-			canvas.drawLine(myPoints.get(i - 1).x, myPoints.get(i - 1).y, myPoints.get(i).x, myPoints.get(i).y, paint);
-		}
+//		for (int i = 1; i < myPoints.size(); i++) {
+//			canvas.drawLine(myPoints.get(i - 1).x, myPoints.get(i - 1).y, myPoints.get(i).x, myPoints.get(i).y, paint);
+//		}
 		while (myPoints.size() > numDots) {
 			myPoints.remove(0);
 		}
@@ -132,7 +131,7 @@ public class DrawStuff extends View implements OnTouchListener {
 		float major, minor;
 		major = event.getTouchMajor(0);
 		minor = event.getTouchMinor(0);
-		rect = myOval(minor, major, event.getX(), event.getY());
+		//rect = myOval(minor, major, event.getX(), event.getY());
 		Log.v("MAJOR/MINOR", "" + major + ":::" + minor);
 		invalidate();
 		keyChar = calcButtons(event.getX(), event.getY());
