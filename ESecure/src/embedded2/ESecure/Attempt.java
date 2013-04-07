@@ -102,4 +102,8 @@ public class Attempt implements Serializable{
 	public StringBuilder getCode() {
 		return code;
 	}
+	
+	public ArrayList<TouchPoint> getPoints(){
+		return points;
+	}
 }
