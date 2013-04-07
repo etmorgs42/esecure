@@ -43,6 +43,7 @@ public class DrawStuff extends View implements OnTouchListener {
 	TouchPoint newPoint;
 	Profile myProfile;
 	String enterCode;
+	String status;
 	RectF rect;
 
 	public DrawStuff(Context context, Vibrator v) {
@@ -59,6 +60,7 @@ public class DrawStuff extends View implements OnTouchListener {
 		display = wm.getDefaultDisplay();
 		display.getSize(size);
 		enterCode = "";
+		status = "";
 		width = size.x;
 		height = size.y;
 		paint.setColor(Color.GREEN);
@@ -115,6 +117,7 @@ public class DrawStuff extends View implements OnTouchListener {
 		canvas.drawText("0", (float) (width / 3 + .13 * width), (float) (height * .88), paint);
 		canvas.drawText("E", (float) (2 * width / 3 + .13 * width), (float) (height * .88), paint);
 		canvas.drawText(enterCode,(float)(0.2*width),(float)(0.1*height),paint);
+		canvas.drawText(status,(float)(0.2*width),(float)(0.2*height),paint);
 		canvas.drawOval(rect, paint);
 	}
 
@@ -154,12 +157,15 @@ public class DrawStuff extends View implements OnTouchListener {
 //					myProfile = new Profile(newAttempt);
 //				}else{
 				if(myProfile != null){
+					Log.v("PROFILE", "add");
 					boolean result = myProfile.add(newAttempt);
-					if(result && count < 10){
-						count++;
+					if(result && attempts < 10){
+						attempts++;
+						status = "Attempt" + attempts;
 					}else if(result){
+						status = "Successful Attempt";
 					}else{
-						
+						status = "Failed Attempt";
 					}
 				}
 				entryMode = 1;

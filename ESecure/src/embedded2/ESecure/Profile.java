@@ -3,6 +3,8 @@ package embedded2.ESecure;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import android.util.Log;
+
 public class Profile implements Serializable{
 	/**
 	 * 
@@ -37,21 +39,29 @@ public class Profile implements Serializable{
 		count++;
 		this.updateStats();
 		return true;
-	}else if (newAttempt.getCode().equals(history.get(count - 1).getCode())) {
+	}else if (newAttempt.getCode().toString().equals(history.get(count - 1).getCode().toString())) {
 			if (count < 10) {
+				Log.v("CODE","new");
 				history.add(newAttempt);
 				count++;
 				this.updateStats();
 				return true;
 			} else {
+				Log.v("CODE","attempt");
 				float score = 0;
-				score += weightDuration*((Math.abs(newAttempt.getAvgDuration() - avgDuration) > (2 * stdDuration))?0:1);
-				score += weightPressure*((Math.abs(newAttempt.getAvgPressure() - avgPressure) > (2 * stdPressure))?0:1);
-				score += weightMajorAxis*((Math.abs(newAttempt.getAvgMajorAxis() - avgMajorAxis) > (2 * stdMajorAxis))?0:1);
-				score += weightMinorAxis*((Math.abs(newAttempt.getAvgMinorAxis() - avgMinorAxis) > (2 * stdMinorAxis))?0:1);
-				score += weightOrientation*((Math.abs(newAttempt.getAvgOrientation() - avgOrientation) > (2 * stdOrientation))?0:1);
+				score += ((Math.abs(newAttempt.getAvgDuration() - avgDuration) > (2 * stdDuration))?0:1);
+				score += ((Math.abs(newAttempt.getAvgPressure() - avgPressure) > (2 * stdPressure))?0:1);
+				score += ((Math.abs(newAttempt.getAvgMajorAxis() - avgMajorAxis) > (2 * stdMajorAxis))?0:1);
+				score += ((Math.abs(newAttempt.getAvgMinorAxis() - avgMinorAxis) > (2 * stdMinorAxis))?0:1);
+				score += ((Math.abs(newAttempt.getAvgOrientation() - avgOrientation) > (2 * stdOrientation))?0:1);
 				
-				if(score > 0.6){
+//				score += weightDuration*((Math.abs(newAttempt.getAvgDuration() - avgDuration) > (2 * stdDuration))?0:1);
+//				score += weightPressure*((Math.abs(newAttempt.getAvgPressure() - avgPressure) > (2 * stdPressure))?0:1);
+//				score += weightMajorAxis*((Math.abs(newAttempt.getAvgMajorAxis() - avgMajorAxis) > (2 * stdMajorAxis))?0:1);
+//				score += weightMinorAxis*((Math.abs(newAttempt.getAvgMinorAxis() - avgMinorAxis) > (2 * stdMinorAxis))?0:1);
+//				score += weightOrientation*((Math.abs(newAttempt.getAvgOrientation() - avgOrientation) > (2 * stdOrientation))?0:1);
+				
+				if(score > 3){
 					history.add(newAttempt);
 					history.remove(0);
 					updateStats();
@@ -61,6 +71,7 @@ public class Profile implements Serializable{
 				}
 			}
 		} else {
+			Log.v("CODE","mismatch");
 			return false;
 		}
 	}
@@ -100,7 +111,7 @@ public class Profile implements Serializable{
 		stdOrientation = (float) Math.sqrt(sumOrientation / count);
 		
 		float normDuration, normPressure, normMajorAxis, normMinorAxis, normOrientation, sumnorm = 0.0f;
-		sumnorm += (normDuration = stdDuration/stdDuration);
+		sumnorm += (normDuration = avgDuration/stdDuration);
 		sumnorm += (normPressure = avgPressure/stdPressure);
 		sumnorm += (normMajorAxis = avgMajorAxis/stdMajorAxis);
 		sumnorm += (normMinorAxis = avgMinorAxis/stdMinorAxis);

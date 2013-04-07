@@ -12,6 +12,7 @@ public class Attempt implements Serializable{
 	private ArrayList<Long> gaps;
 	private StringBuilder code;
 	private int count,mode;
+	private float avgGaps;
 	private float avgDuration;
 	private float avgPressure;
 	private float avgMajorAxis, avgMinorAxis; // major and minor axes of touch

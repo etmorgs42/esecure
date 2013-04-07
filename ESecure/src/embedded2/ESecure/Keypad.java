@@ -15,6 +15,7 @@ public class Keypad extends Activity implements SensorListener {
 	DrawStuff d;
 	SensorManager sm;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		//changed this text
@@ -39,6 +40,7 @@ public class Keypad extends Activity implements SensorListener {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void onSensorChanged(int sensor, float[] values) {
 		synchronized (this) {
 
@@ -55,12 +57,14 @@ public class Keypad extends Activity implements SensorListener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onResume() {
 		super.onResume();
 		sm.registerListener(this, SensorManager.SENSOR_ORIENTATION | SensorManager.SENSOR_ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onStop() {
 		sm.unregisterListener(this);
