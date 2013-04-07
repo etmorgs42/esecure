@@ -9,7 +9,7 @@ public class Attempt implements Serializable{
 	 */
 	private static final long serialVersionUID = -7564729164140437181L;
 	private ArrayList<TouchPoint> points;
-	private ArrayList<Long> gaps;
+	private ArrayList<Double> gaps;
 	private StringBuilder code;
 	private int count,mode;
 	private float avgGaps;
@@ -26,7 +26,7 @@ public class Attempt implements Serializable{
 
 	Attempt(int mode, TouchPoint first) {
 		points = new ArrayList<TouchPoint>();
-		gaps = new ArrayList<Long>();
+		gaps = new ArrayList<Double>();
 		code = new StringBuilder();
 		points.add(first);
 		code.append(first.getKey());
@@ -36,7 +36,7 @@ public class Attempt implements Serializable{
 
 	void addPoint(TouchPoint newPoint) {
 		points.add(newPoint);
-		gaps.add(new Long(points.get(count).getStart()- points.get(count - 1).getStart()));
+		gaps.add(Double.valueOf((double)(points.get(count).getStart()- points.get(count - 1).getStart())));
 		if(mode == 1){
 			code.append(newPoint.getKey());
 		}else if(points.get(count).getKey() != points.get(count - 1).getKey()){
@@ -105,5 +105,9 @@ public class Attempt implements Serializable{
 	
 	public ArrayList<TouchPoint> getPoints(){
 		return points;
+	}
+	
+	public ArrayList<Double> getGaps(){
+		return gaps;
 	}
 }

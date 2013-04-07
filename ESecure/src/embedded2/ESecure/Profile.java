@@ -58,6 +58,11 @@ public class Profile implements Serializable{
 				
 				for(int i = 0; i < count; i++){
 					for(int j = 0; j < history.get(i).getPoints().size(); j++){
+						durations.add(Double.valueOf((double)(history.get(i).getPoints().get(j).getDuration())));
+						pressures.add(Double.valueOf((double)history.get(i).getPoints().get(j).getPressure()));
+						majors.add(Double.valueOf((double)history.get(i).getPoints().get(j).getMajorAxis()));
+						minors.add(Double.valueOf((double)history.get(i).getPoints().get(j).getMinorAxis()));
+						orientations.add(Double.valueOf((double)history.get(i).getPoints().get(j).getOrientation()));
 						
 					}
 				}
