@@ -82,6 +82,7 @@ public class Keypad extends Activity implements SensorListener {
 		case R.id.color_settings:
 			return true;
 		case R.id.new_pass:
+			d.newPassword();
 			return true;
 		case R.id.red:
 			d.setColor(1);

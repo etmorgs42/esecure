@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TouchPoint implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5295750412613428842L;
 	private float x,y;
 	private long duration;
 	private float pressure;

@@ -37,7 +37,7 @@ public class DrawStuff extends View implements OnTouchListener {
 	int entryMode = 1;
 	long lastTime;
 	long lastE = 0;
-	int count;
+	int count,attempts;
 	float maxPressure, maxMajorAxis, maxMinorAxis,avgOrientation;
 	Attempt newAttempt;
 	TouchPoint newPoint;
@@ -64,6 +64,11 @@ public class DrawStuff extends View implements OnTouchListener {
 		paint.setColor(Color.GREEN);
 		paint.setStrokeWidth(10);
 		paint.setAntiAlias(true);
+	}
+	
+	public void newPassword(){
+		myProfile = new Profile();
+		attempts = 0;
 	}
 
 	@Override
@@ -145,10 +150,17 @@ public class DrawStuff extends View implements OnTouchListener {
 				enterCode = newAttempt.getCode().toString();
 				Log.v("COLLECTED",enterCode);
 				lastE = System.currentTimeMillis();
-				if(myProfile == null){
-					myProfile = new Profile(newAttempt);
-				}else{
-					myProfile.add(newAttempt);
+//				if(myProfile == null){
+//					myProfile = new Profile(newAttempt);
+//				}else{
+				if(myProfile != null){
+					boolean result = myProfile.add(newAttempt);
+					if(result && count < 10){
+						count++;
+					}else if(result){
+					}else{
+						
+					}
 				}
 				entryMode = 1;
 

@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Profile implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5720841490748053586L;
 	private ArrayList<Attempt> history;
 	private int count;
 	private float avgDuration;
@@ -21,16 +25,22 @@ public class Profile implements Serializable{
 	private float weightMajorAxis, weightMinorAxis;
 	private float weightOrientation;
 
-	public Profile(Attempt first) {
+	public Profile() {
 		history = new ArrayList<Attempt>();
-		history.add(first);
-		count = 1;
+		//history.add(first);
+		count = 0;
 	}
 
 	public boolean add(Attempt newAttempt) {
-		if (newAttempt.getCode().equals(history.get(count - 1).getCode())) {
+	if(count == 0){
+		history.add(newAttempt);
+		count++;
+		this.updateStats();
+		return true;
+	}else if (newAttempt.getCode().equals(history.get(count - 1).getCode())) {
 			if (count < 10) {
 				history.add(newAttempt);
+				count++;
 				this.updateStats();
 				return true;
 			} else {

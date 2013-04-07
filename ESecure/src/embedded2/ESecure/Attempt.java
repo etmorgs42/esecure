@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Attempt implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7564729164140437181L;
 	private ArrayList<TouchPoint> points;
 	private ArrayList<Long> gaps;
 	private StringBuilder code;
