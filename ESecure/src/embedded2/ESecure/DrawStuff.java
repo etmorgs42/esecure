@@ -159,6 +159,7 @@ public class DrawStuff extends View implements OnTouchListener {
 				if(myProfile != null){
 					Log.v("PROFILE", "add");
 					boolean result = myProfile.add(newAttempt);
+					status="";
 					if(result && attempts < 10){
 						attempts++;
 						status = "Attempt" + attempts;
