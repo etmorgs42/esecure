@@ -124,6 +124,8 @@ public class DrawStuff extends View implements OnTouchListener {
 	public boolean onTouch(View view, MotionEvent event) {
 		// if(event.getAction() != MotionEvent.ACTION_DOWN)
 		// return super.onTouchEvent(event);
+		Log.v("DBUG","event Orientation: "+event.getOrientation());
+
 		Log.v("PRESSURE", "" + event.getSize());
 
 		// Log.v

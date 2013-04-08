@@ -44,16 +44,16 @@ public class Keypad extends Activity implements SensorListener {
 	public void onSensorChanged(int sensor, float[] values) {
 		synchronized (this) {
 
-			if (sensor == SensorManager.SENSOR_ORIENTATION) {
-				Log.v("Orientation X: ", "" + values[0]);
-				Log.v("Orientation Y: ", "" + values[1]);
-				Log.v("Orientation Z: ", "" + values[2]);
-			}
-			if (sensor == SensorManager.SENSOR_ACCELEROMETER) {
-				Log.v("Accel X: ", "" + values[0]);
-				Log.v("Accel Y: ", "" + values[1]);
-				Log.v("Accel Z: ", "" + values[2]);
-			}
+//			if (sensor == SensorManager.SENSOR_ORIENTATION) {
+//				Log.v("Orientation X: ", "" + values[0]);
+//				Log.v("Orientation Y: ", "" + values[1]);
+//				Log.v("Orientation Z: ", "" + values[2]);
+//			}
+//			if (sensor == SensorManager.SENSOR_ACCELEROMETER) {
+//				Log.v("Accel X: ", "" + values[0]);
+//				Log.v("Accel Y: ", "" + values[1]);
+//				Log.v("Accel Z: ", "" + values[2]);
+//			}
 		}
 	}
 
