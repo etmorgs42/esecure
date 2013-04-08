@@ -9,6 +9,11 @@ public class Attempt implements Serializable{
 	 */
 	private static final long serialVersionUID = -7564729164140437181L;
 	private ArrayList<TouchPoint> points;
+	private ArrayList<Double> durations;
+	private ArrayList<Double> pressures;
+	private ArrayList<Double> majors;
+	private ArrayList<Double> minors;
+	private ArrayList<Double> orientations;
 	private ArrayList<Double> gaps;
 	private StringBuilder code;
 	private int count,mode;
@@ -27,6 +32,11 @@ public class Attempt implements Serializable{
 	Attempt(int mode, TouchPoint first) {
 		points = new ArrayList<TouchPoint>();
 		gaps = new ArrayList<Double>();
+		durations.add(Double.valueOf(first.getDuration()));
+		pressures.add(Double.valueOf(first.getPressure()));
+		majors.add(Double.valueOf(first.getMajorAxis()));
+		minors.add(Double.valueOf(first.getMinorAxis()));
+		orientations.add(Double.valueOf(first.getOrientation()));
 		code = new StringBuilder();
 		points.add(first);
 		code.append(first.getKey());
@@ -36,6 +46,11 @@ public class Attempt implements Serializable{
 
 	void addPoint(TouchPoint newPoint) {
 		points.add(newPoint);
+		durations.add(Double.valueOf(newPoint.getDuration()));
+		pressures.add(Double.valueOf(newPoint.getPressure()));
+		majors.add(Double.valueOf(newPoint.getMajorAxis()));
+		minors.add(Double.valueOf(newPoint.getMinorAxis()));
+		orientations.add(Double.valueOf(newPoint.getOrientation()));
 		gaps.add(Double.valueOf((double)(points.get(count).getStart()- points.get(count - 1).getStart())));
 		if(mode == 1){
 			code.append(newPoint.getKey());
@@ -44,60 +59,60 @@ public class Attempt implements Serializable{
 		}
 		count++;
 
-		float sumDuration = 0.0f, sumPressure = 0.0f, sumMajorAxis = 0.0f, sumMinorAxis = 0.0f, sumOrientation = 0.0f;
-		for (int i = 0; i < count; i++) {
-			sumDuration += (float) points.get(i).getDuration();
-			sumPressure += points.get(i).getPressure();
-			sumMajorAxis += points.get(i).getMajorAxis();
-			sumMinorAxis += points.get(i).getMinorAxis();
-			sumOrientation += points.get(i).getOrientation();
-		}
-		avgDuration = sumDuration / count;
-		avgPressure = sumPressure / count;
-		avgMajorAxis = sumMajorAxis / count;
-		avgMinorAxis = sumMinorAxis / count;
-		avgOrientation = sumOrientation / count;
+//		float sumDuration = 0.0f, sumPressure = 0.0f, sumMajorAxis = 0.0f, sumMinorAxis = 0.0f, sumOrientation = 0.0f;
+//		for (int i = 0; i < count; i++) {
+//			sumDuration += (float) points.get(i).getDuration();
+//			sumPressure += points.get(i).getPressure();
+//			sumMajorAxis += points.get(i).getMajorAxis();
+//			sumMinorAxis += points.get(i).getMinorAxis();
+//			sumOrientation += points.get(i).getOrientation();
+//		}
+//		avgDuration = sumDuration / count;
+//		avgPressure = sumPressure / count;
+//		avgMajorAxis = sumMajorAxis / count;
+//		avgMinorAxis = sumMinorAxis / count;
+//		avgOrientation = sumOrientation / count;
 	}
 
-	public float getAvgDuration() {
-		return avgDuration;
-	}
-
-	public float getAvgPressure() {
-		return avgPressure;
-	}
-
-	public float getAvgMajorAxis() {
-		return avgMajorAxis;
-	}
-
-	public float getAvgMinorAxis() {
-		return avgMinorAxis;
-	}
-
-	public float getAvgOrientation() {
-		return avgOrientation;
-	}
-	
-	public float getStdDuration() {
-		return stdDuration;
-	}
-
-	public float getStdPressure() {
-		return stdPressure;
-	}
-
-	public float getStdMajorAxis() {
-		return stdMajorAxis;
-	}
-
-	public float getStdMinorAxis() {
-		return stdMinorAxis;
-	}
-
-	public float getStdOrientation() {
-		return stdOrientation;
-	}
+//	public float getAvgDuration() {
+//		return avgDuration;
+//	}
+//
+//	public float getAvgPressure() {
+//		return avgPressure;
+//	}
+//
+//	public float getAvgMajorAxis() {
+//		return avgMajorAxis;
+//	}
+//
+//	public float getAvgMinorAxis() {
+//		return avgMinorAxis;
+//	}
+//
+//	public float getAvgOrientation() {
+//		return avgOrientation;
+//	}
+//	
+//	public float getStdDuration() {
+//		return stdDuration;
+//	}
+//
+//	public float getStdPressure() {
+//		return stdPressure;
+//	}
+//
+//	public float getStdMajorAxis() {
+//		return stdMajorAxis;
+//	}
+//
+//	public float getStdMinorAxis() {
+//		return stdMinorAxis;
+//	}
+//
+//	public float getStdOrientation() {
+//		return stdOrientation;
+//	}
 
 	public StringBuilder getCode() {
 		return code;
@@ -107,7 +122,29 @@ public class Attempt implements Serializable{
 		return points;
 	}
 	
+	public ArrayList<Double> getDurations(){
+		return durations;
+	}
+	
+	public ArrayList<Double> getPressures(){
+		return pressures;
+	}
+	
+	public ArrayList<Double> getMajors(){
+		return majors;
+	}
+	
+	public ArrayList<Double> getMinors(){
+		return minors;
+	}
+	
+	public ArrayList<Double> getOrientations(){
+		return orientations;
+	}
+	
 	public ArrayList<Double> getGaps(){
 		return gaps;
 	}
+	
+	
 }
