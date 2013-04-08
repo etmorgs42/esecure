@@ -123,6 +123,9 @@ public class Profile implements Serializable{
 					sample2[i] = newAttempt.getOrientations().get(i).doubleValue();
 				}
 				testOrientation = tester.tTest(sample1,sample2,0.1);
+				
+				sample1 = new double[gaps.size()];
+				sample2 = new double[newAttempt.getGaps().size()];
 				for(int i = 0; i < sample1.length; i++){
 					sample1[i] = gaps.get(i).doubleValue();
 				}
@@ -222,6 +225,16 @@ public class Profile implements Serializable{
 		weightOrientation = cvOrientation/sumCv;
 		weightGaps = cvGaps/sumCv;
 		
-		maxScore = sumCv;
+		weightDuration = 1/weightDuration;
+		weightPressure = 1/weightPressure;
+		weightMajorAxis = 1/weightMajorAxis;
+		weightMinorAxis = 1/weightMinorAxis;
+		weightOrientation = 1/weightOrientation;
+		weightGaps = 1/weightGaps;
+		
+		maxScore = weightDuration + weightPressure + weightMajorAxis + 
+				weightMinorAxis + weightOrientation + weightGaps;
+		
+		
 	}
 }
