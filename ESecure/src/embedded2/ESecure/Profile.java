@@ -131,6 +131,7 @@ public class Profile implements Serializable{
 				testGaps = tester.tTest(sample1,sample2,alpha);
 				
 				Log.v("DBUG","weightDuration: "+weightDuration);
+				Log.v("DBUG","weights  : "+weightDuration+" "+weightPressure+" "+weightMajorAxis+" "+weightDuration+" "+weightMinorAxis+" "+weightGaps+" ");
 				score += weightDuration*(testDuration?0:1);
 				score += weightPressure*(testPressure?0:1);
 				score += weightMajorAxis*(testMajor?0:1);
@@ -231,8 +232,25 @@ public class Profile implements Serializable{
 		weightOrientation = 1.0f/weightOrientation;
 		weightGaps = 1.0f/weightGaps;
 		
+		if(stdDuration==0){
+			weightDuration=0;
+		}
+		if(stdPressure==0){
+			weightPressure=0;
+		}
+		if(stdMajorAxis==0){
+			weightMajorAxis=0;
+		}
+		if(stdMinorAxis==0){
+			weightMinorAxis=0;
+		}
+		if(stdGap==0){
+			weightGaps=0;
+		}
+		
 		maxScore = weightDuration + weightPressure + weightMajorAxis + 
 				weightMinorAxis +weightGaps;
+		Log.v("DBUG","MAX SCORE: "+maxScore);
 		
 		
 	}
