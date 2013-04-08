@@ -31,6 +31,11 @@ public class Attempt implements Serializable{
 
 	Attempt(int mode, TouchPoint first) {
 		points = new ArrayList<TouchPoint>();
+		durations = new ArrayList<Double>();
+		pressures = new ArrayList<Double>();
+		majors = new ArrayList<Double>();
+		minors = new ArrayList<Double>();
+		orientations = new ArrayList<Double>();
 		gaps = new ArrayList<Double>();
 		durations.add(Double.valueOf(first.getDuration()));
 		pressures.add(Double.valueOf(first.getPressure()));

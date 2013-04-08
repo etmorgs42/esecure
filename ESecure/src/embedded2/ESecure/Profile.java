@@ -23,20 +23,35 @@ public class Profile implements Serializable{
 	private float avgDuration;
 	private float avgPressure;
 	private float avgMajorAxis, avgMinorAxis; // major and minor axes of touch
-	private float avgOrientation; // orientation of touch ellipse
+	private float avgOrientation,avgGap; // orientation of touch ellipse
 	
 	private float stdDuration;
 	private float stdPressure;
 	private float stdMajorAxis, stdMinorAxis; // major and minor axes of touch
-	private float stdOrientation; // orientation of touch ellipse
+	private float stdOrientation, stdGap; // orientation of touch ellipse
+	
+	private float cvDuration;
+	private float cvPressure;
+	private float cvMajorAxis, cvMinorAxis;
+	private float cvOrientation;
+	private float cvGaps;
 	
 	private float weightDuration;
 	private float weightPressure;
 	private float weightMajorAxis, weightMinorAxis;
 	private float weightOrientation;
+	private float weightGaps;
+	
+	private float maxScore;
 
 	public Profile() {
 		history = new ArrayList<Attempt>();
+		durations = new ArrayList<Double>();
+		pressures = new ArrayList<Double>();
+		majors = new ArrayList<Double>();
+		minors = new ArrayList<Double>();
+		orientations = new ArrayList<Double>();
+		gaps = new ArrayList<Double>();
 		tester = new TTest();
 		//history.add(first);
 		count = 0;
@@ -46,6 +61,12 @@ public class Profile implements Serializable{
 	if(count == 0){
 		history.add(newAttempt);
 		count++;
+		durations.addAll(newAttempt.getDurations());
+		pressures.addAll(newAttempt.getPressures());
+		majors.addAll(newAttempt.getMajors());
+		minors.addAll(newAttempt.getMinors());
+		orientations.addAll(newAttempt.getOrientations());
+		gaps.addAll(newAttempt.getGaps());
 		//this.updateStats();
 		return true;
 	}else if (newAttempt.getCode().toString().equals(history.get(count - 1).getCode().toString())) {
@@ -59,14 +80,7 @@ public class Profile implements Serializable{
 				Log.v("CODE","attempt");
 				float score = 0;
 				
-				for(int i = 0; i < count; i++){
-					durations.addAll(history.get(i).getDurations());
-					pressures.addAll(history.get(i).getPressures());
-					majors.addAll(history.get(i).getMajors());
-					minors.addAll(history.get(i).getMinors());
-					orientations.addAll(history.get(i).getOrientations());
-					gaps.addAll(history.get(i).getGaps());
-				}
+				
 				
 				double [] sample1 = new double[durations.size()];
 				double [] sample2 = new double[newAttempt.getPoints().size()];
@@ -78,20 +92,61 @@ public class Profile implements Serializable{
 				}
 				testDuration = tester.tTest(sample1,sample2,0.1);
 				
-				score += ((Math.abs(newAttempt.getAvgDuration() - avgDuration) > (2 * stdDuration))?0:1);
-				score += ((Math.abs(newAttempt.getAvgPressure() - avgPressure) > (2 * stdPressure))?0:1);
-				score += ((Math.abs(newAttempt.getAvgMajorAxis() - avgMajorAxis) > (2 * stdMajorAxis))?0:1);
-				score += ((Math.abs(newAttempt.getAvgMinorAxis() - avgMinorAxis) > (2 * stdMinorAxis))?0:1);
-				score += ((Math.abs(newAttempt.getAvgOrientation() - avgOrientation) > (2 * stdOrientation))?0:1);
+				for(int i = 0; i < sample1.length; i++){
+					sample1[i] = pressures.get(i).doubleValue();
+				}
+				for(int i = 0; i < sample2.length; i++){
+					sample2[i] = newAttempt.getPressures().get(i).doubleValue();
+				}
+				testPressure = tester.tTest(sample1,sample2,0.1);
 				
-//				score += weightDuration*((Math.abs(newAttempt.getAvgDuration() - avgDuration) > (2 * stdDuration))?0:1);
-//				score += weightPressure*((Math.abs(newAttempt.getAvgPressure() - avgPressure) > (2 * stdPressure))?0:1);
-//				score += weightMajorAxis*((Math.abs(newAttempt.getAvgMajorAxis() - avgMajorAxis) > (2 * stdMajorAxis))?0:1);
-//				score += weightMinorAxis*((Math.abs(newAttempt.getAvgMinorAxis() - avgMinorAxis) > (2 * stdMinorAxis))?0:1);
-//				score += weightOrientation*((Math.abs(newAttempt.getAvgOrientation() - avgOrientation) > (2 * stdOrientation))?0:1);
+				for(int i = 0; i < sample1.length; i++){
+					sample1[i] = majors.get(i).doubleValue();
+				}
+				for(int i = 0; i < sample2.length; i++){
+					sample2[i] = newAttempt.getMajors().get(i).doubleValue();
+				}
+				testMajor = tester.tTest(sample1,sample2,0.1);
 				
-				if(score > 3){
+				for(int i = 0; i < sample1.length; i++){
+					sample1[i] = minors.get(i).doubleValue();
+				}
+				for(int i = 0; i < sample2.length; i++){
+					sample2[i] = newAttempt.getMinors().get(i).doubleValue();
+				}
+				testMinor = tester.tTest(sample1,sample2,0.1);
+				
+				for(int i = 0; i < sample1.length; i++){
+					sample1[i] = orientations.get(i).doubleValue();
+				}
+				for(int i = 0; i < sample2.length; i++){
+					sample2[i] = newAttempt.getOrientations().get(i).doubleValue();
+				}
+				testOrientation = tester.tTest(sample1,sample2,0.1);
+				for(int i = 0; i < sample1.length; i++){
+					sample1[i] = gaps.get(i).doubleValue();
+				}
+				for(int i = 0; i < sample2.length; i++){
+					sample2[i] = newAttempt.getGaps().get(i).doubleValue();
+				}
+				testGaps = tester.tTest(sample1,sample2,0.1);
+				
+				
+				score += weightDuration*(testDuration?0:1);
+				score += weightPressure*(testPressure?0:1);
+				score += weightMajorAxis*(testMajor?0:1);
+				score += weightMinorAxis*(testMinor?0:1);
+				score += weightOrientation*(testOrientation?0:1);
+				score += weightGaps*(testGaps?0:1);
+				
+				if(score > 0.6*maxScore){
 					history.add(newAttempt);
+					durations.removeAll(history.get(0).getDurations());
+					pressures.removeAll(history.get(0).getPressures());
+					majors.removeAll(history.get(0).getMajors());
+					minors.removeAll(history.get(0).getMinors());
+					orientations.removeAll(history.get(0).getOrientations());
+					gaps.removeAll(history.get(0).getGaps());
 					history.remove(0);
 					//updateStats();
 					return true;
@@ -106,38 +161,67 @@ public class Profile implements Serializable{
 	}
 	
 	private void updateStats(){
-		float sumDuration = 0, sumPressure = 0.0f, sumMajorAxis = 0.0f, sumMinorAxis = 0.0f, sumOrientation = 0.0f;
-		for (int i = 0; i < count; i++) {
-			sumDuration += history.get(i).getAvgDuration();
-			sumPressure += history.get(i).getAvgPressure();
-			sumMajorAxis += history.get(i).getAvgMajorAxis();
-			sumMinorAxis += history.get(i).getAvgMinorAxis();
-			sumOrientation += history.get(i).getAvgOrientation();
+		float sumDuration = 0, sumPressure = 0, sumMajorAxis = 0, sumMinorAxis = 0, sumOrientation = 0,sumGaps = 0;
+		int size = durations.size();
+		for (int i = 0; i < size; i++) {
+			sumDuration += durations.get(i);
+			sumPressure += pressures.get(i);
+			sumMajorAxis += majors.get(i);
+			sumMinorAxis += minors.get(i);
+			sumOrientation += orientations.get(i);
 		}
-		avgDuration = sumDuration / count;
-		avgPressure = sumPressure / count;
-		avgMajorAxis = sumMajorAxis / count;
-		avgMinorAxis = sumMinorAxis / count;
-		avgOrientation = sumOrientation / count;
+		
+		for(int i = 0; i < gaps.size(); i++){
+			sumGaps += gaps.get(i);
+		}
+		avgDuration = sumDuration / size;
+		avgPressure = sumPressure / size;
+		avgMajorAxis = sumMajorAxis / size;
+		avgMinorAxis = sumMinorAxis / size;
+		avgOrientation = sumOrientation / size;
+		avgGap = sumGaps/gaps.size();
 		sumDuration = sumPressure = sumMajorAxis = sumMinorAxis = sumOrientation = 0.0f;
-		for (int i = 0; i < count; i++) {
-			sumDuration += ((float) history.get(i).getAvgDuration() - avgDuration)
-					* ((float) history.get(i).getAvgDuration() - avgDuration);
-			sumPressure += (history.get(i).getAvgPressure() - avgPressure)
-					* (history.get(i).getAvgPressure() - avgPressure);
-			sumMajorAxis += (history.get(i).getAvgMajorAxis() - avgMajorAxis)
-					* (history.get(i).getAvgMajorAxis() - avgMajorAxis);
-			sumMinorAxis += (history.get(i).getAvgMinorAxis() - avgMinorAxis)
-					* (history.get(i).getAvgMinorAxis() - avgMinorAxis);
-			sumOrientation += (history.get(i).getAvgOrientation() - avgOrientation)
-					* (history.get(i).getAvgOrientation() - avgOrientation);
+		for (int i = 0; i < size; i++) {
+			sumDuration += (durations.get(i) - avgDuration)
+					* (durations.get(i) - avgDuration);
+			sumPressure += (pressures.get(i) - avgPressure)
+					* (pressures.get(i) - avgPressure);
+			sumMajorAxis += (majors.get(i) - avgMajorAxis)
+					* (majors.get(i) - avgMajorAxis);
+			sumMinorAxis += (minors.get(i) - avgMinorAxis)
+					* (minors.get(i) - avgMinorAxis);
+			sumOrientation += (orientations.get(i) - avgOrientation)
+					* (orientations.get(i) - avgOrientation);
 		}
 
-		stdDuration = (float) Math.sqrt(sumDuration / count);
-		stdPressure = (float) Math.sqrt(sumPressure / count);
-		stdMajorAxis = (float) Math.sqrt(sumMajorAxis / count);
-		stdMinorAxis = (float) Math.sqrt(sumMinorAxis / count);
-		stdOrientation = (float) Math.sqrt(sumOrientation / count);
-				
+		for(int i = 0; i < gaps.size(); i++){
+			sumGaps += (gaps.get(i) - avgGap)*(gaps.get(i) - avgGap);
+		}
+
+		stdDuration = (float) Math.sqrt(sumDuration / size);
+		stdPressure = (float) Math.sqrt(sumPressure / size);
+		stdMajorAxis = (float) Math.sqrt(sumMajorAxis / size);
+		stdMinorAxis = (float) Math.sqrt(sumMinorAxis / size);
+		stdOrientation = (float) Math.sqrt(sumOrientation / size);
+		stdGap = (float)Math.sqrt(sumGaps/gaps.size());
+		
+		
+		cvDuration = stdDuration/avgDuration;
+		cvPressure = stdPressure/avgPressure;
+		cvMajorAxis = stdMajorAxis/avgMajorAxis;
+		cvMinorAxis = stdMinorAxis/avgMinorAxis;
+		cvOrientation = stdOrientation/avgOrientation;
+		cvGaps = stdGap/avgGap;
+		
+		float sumCv = cvDuration + cvPressure + cvMajorAxis + cvMinorAxis + cvOrientation + cvGaps;
+		
+		weightDuration = cvDuration/sumCv;
+		weightPressure = cvPressure/sumCv;
+		weightMajorAxis = cvMajorAxis/sumCv;
+		weightMinorAxis = cvMinorAxis/sumCv;
+		weightOrientation = cvOrientation/sumCv;
+		weightGaps = cvGaps/sumCv;
+		
+		maxScore = sumCv;
 	}
 }
