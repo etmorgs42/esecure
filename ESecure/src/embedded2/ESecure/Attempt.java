@@ -13,7 +13,6 @@ public class Attempt implements Serializable{
 	private ArrayList<Double> pressures;
 	private ArrayList<Double> majors;
 	private ArrayList<Double> minors;
-	private ArrayList<Double> orientations;
 	private ArrayList<Double> gaps;
 	private StringBuilder code;
 	private int count,mode;
@@ -22,12 +21,10 @@ public class Attempt implements Serializable{
 	private float avgPressure;
 	private float avgMajorAxis, avgMinorAxis; // major and minor axes of touch
 												// ellipse
-	private float avgOrientation; // orientation of touch ellipse
 	private float stdDuration;
 	private float stdPressure;
 	private float stdMajorAxis, stdMinorAxis; // major and minor axes of touch
 												// ellipse
-	private float stdOrientation; // orientation of touch ellipse
 
 	Attempt(int mode, TouchPoint first) {
 		points = new ArrayList<TouchPoint>();
@@ -35,13 +32,11 @@ public class Attempt implements Serializable{
 		pressures = new ArrayList<Double>();
 		majors = new ArrayList<Double>();
 		minors = new ArrayList<Double>();
-		orientations = new ArrayList<Double>();
 		gaps = new ArrayList<Double>();
 		durations.add(Double.valueOf(first.getDuration()));
 		pressures.add(Double.valueOf(first.getPressure()));
 		majors.add(Double.valueOf(first.getMajorAxis()));
 		minors.add(Double.valueOf(first.getMinorAxis()));
-		orientations.add(Double.valueOf(first.getOrientation()));
 		code = new StringBuilder();
 		points.add(first);
 		code.append(first.getKey());
@@ -55,7 +50,6 @@ public class Attempt implements Serializable{
 		pressures.add(Double.valueOf(newPoint.getPressure()));
 		majors.add(Double.valueOf(newPoint.getMajorAxis()));
 		minors.add(Double.valueOf(newPoint.getMinorAxis()));
-		orientations.add(Double.valueOf(newPoint.getOrientation()));
 		gaps.add(Double.valueOf((double)(points.get(count).getStart()- points.get(count - 1).getStart())));
 		if(mode == 1){
 			code.append(newPoint.getKey());
@@ -141,10 +135,6 @@ public class Attempt implements Serializable{
 	
 	public ArrayList<Double> getMinors(){
 		return minors;
-	}
-	
-	public ArrayList<Double> getOrientations(){
-		return orientations;
 	}
 	
 	public ArrayList<Double> getGaps(){

@@ -12,7 +12,6 @@ public class TouchPoint implements Serializable{
 	private long duration;
 	private float pressure;
 	private float majorAxis,minorAxis; //major and minor axes of touch ellipse
-	private float orientation; //orientation of touch ellipse
 	private long start,end;
 	private char keyPress;
 	
@@ -25,10 +24,6 @@ public class TouchPoint implements Serializable{
 	void setShape(float majorAxis, float minorAxis){
 		this.majorAxis = majorAxis;
 		this.minorAxis = minorAxis;
-	}
-	
-	void setOrientation(float orientation){
-		this.orientation = orientation;
 	}
 	
 	void setKey(char keyPress){
@@ -48,7 +43,6 @@ public class TouchPoint implements Serializable{
 	float getY(){ return y; }
 	float getMajorAxis(){ return majorAxis; }
 	float getMinorAxis(){ return minorAxis; }
-	float getOrientation(){ return orientation; }
 	float getPressure(){ return pressure; }
 	char getKey(){ return keyPress; }
 	long getStart(){ return start; }

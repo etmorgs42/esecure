@@ -11,8 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-public class Keypad extends Activity implements SensorListener {
-	DrawStuff d;
+public class ESecure extends Activity implements SensorListener {
+	KeyPad d;
 	SensorManager sm;
 
 	@SuppressWarnings("deprecation")
@@ -26,7 +26,7 @@ public class Keypad extends Activity implements SensorListener {
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sm.registerListener(this, SensorManager.SENSOR_ORIENTATION | SensorManager.SENSOR_ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL);
-		d = new DrawStuff(this, v);
+		d = new KeyPad(this, v);
 		setContentView(d);
 		d.requestFocus();
 		// Vibrate for 500 milliseconds

@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 
-public class DrawStuff extends View implements OnTouchListener {
+public class KeyPad extends View implements OnTouchListener {
 	private static final String TAG = "DrawView";
 	Random r;
 	int numDots = 15;
@@ -38,7 +38,7 @@ public class DrawStuff extends View implements OnTouchListener {
 	long lastTime;
 	long lastE = 0;
 	int count,attempts;
-	float maxPressure, maxMajorAxis, maxMinorAxis,avgOrientation;
+	float maxPressure, maxMajorAxis, maxMinorAxis;
 	Attempt newAttempt;
 	TouchPoint newPoint;
 	Profile myProfile;
@@ -46,7 +46,7 @@ public class DrawStuff extends View implements OnTouchListener {
 	String status;
 	RectF rect;
 
-	public DrawStuff(Context context, Vibrator v) {
+	public KeyPad(Context context, Vibrator v) {
 		super(context);
 		setFocusable(true);
 		setFocusableInTouchMode(true);
@@ -124,9 +124,9 @@ public class DrawStuff extends View implements OnTouchListener {
 	public boolean onTouch(View view, MotionEvent event) {
 		// if(event.getAction() != MotionEvent.ACTION_DOWN)
 		// return super.onTouchEvent(event);
-		Log.v("DBUG","event Orientation: "+event.getOrientation());
+		//Log.v("DBUG","event Orientation: "+event.getOrientation());
 
-		Log.v("PRESSURE", "" + event.getSize());
+		//Log.v("PRESSURE", "" + event.getSize());
 
 		// Log.v
 		myPoint myPoint = new myPoint();
@@ -166,9 +166,9 @@ public class DrawStuff extends View implements OnTouchListener {
 						attempts++;
 						status = "Attempt" + attempts;
 					}else if(result){
-						status = "Successful Attempt";
+						status = "Pass";
 					}else{
-						status = "Failed Attempt";
+						status = "Fail";
 					}
 				}
 				entryMode = 1;
@@ -193,7 +193,6 @@ public class DrawStuff extends View implements OnTouchListener {
 					maxPressure = event.getPressure();
 					maxMajorAxis = event.getTouchMajor();
 					maxMinorAxis = event.getTouchMinor();
-					avgOrientation = event.getOrientation();
 				}else{
 					float dx = x - lastx;
 					float dy = y - lasty;
@@ -204,7 +203,6 @@ public class DrawStuff extends View implements OnTouchListener {
 						entryMode++;
 						newPoint = new TouchPoint(lastx,lasty,lastTime);
 						newPoint.setEnd(System.currentTimeMillis());
-						newPoint.setOrientation(avgOrientation);
 						newPoint.setPressure(maxPressure);
 						newPoint.setShape(maxMajorAxis, maxMinorAxis);
 						newPoint.setKey(keyChar);
@@ -220,17 +218,16 @@ public class DrawStuff extends View implements OnTouchListener {
 						maxPressure = event.getPressure();
 						maxMajorAxis = event.getTouchMajor();
 						maxMinorAxis = event.getTouchMinor();
-						avgOrientation = event.getOrientation();
 					}else{ //same point just update stats
 						maxPressure = Math.max(maxPressure, event.getPressure());
 						maxMajorAxis = Math.max(maxMajorAxis, event.getTouchMajor());
-						maxMinorAxis = Math.max(maxMinorAxis, event.getTouchMinor()); 
-						avgOrientation = (avgOrientation*count++ + event.getOrientation())/count;
+						maxMinorAxis = Math.max(maxMinorAxis, event.getTouchMinor());
 					}
 
 				}
 			}else{
 				if(lastx == 0 && lasty == 0){ //first point of attempt
+					status = "";
 					lastx = x;
 					lasty = y;
 					lastChar = keyChar;
@@ -239,7 +236,6 @@ public class DrawStuff extends View implements OnTouchListener {
 					maxPressure = event.getPressure();
 					maxMajorAxis = event.getTouchMajor();
 					maxMinorAxis = event.getTouchMinor();
-					avgOrientation = event.getOrientation();
 				}else{
 //					float dx = x - lastx;
 //					float dy = y - lasty;
@@ -249,7 +245,6 @@ public class DrawStuff extends View implements OnTouchListener {
 						Log.v("COLLECTED", "Point");
 						newPoint = new TouchPoint(lastx,lasty,lastTime);
 						newPoint.setEnd(System.currentTimeMillis());
-						newPoint.setOrientation(avgOrientation);
 						newPoint.setPressure(maxPressure);
 						newPoint.setShape(maxMajorAxis, maxMinorAxis);
 						newPoint.setKey(keyChar);
@@ -265,12 +260,10 @@ public class DrawStuff extends View implements OnTouchListener {
 						maxPressure = event.getPressure();
 						maxMajorAxis = event.getTouchMajor();
 						maxMinorAxis = event.getTouchMinor();
-						avgOrientation = event.getOrientation();
 					}else{ //same point just update stats
 						maxPressure = Math.max(maxPressure, event.getPressure());
 						maxMajorAxis = Math.max(maxMajorAxis, event.getTouchMajor());
 						maxMinorAxis = Math.max(maxMinorAxis, event.getTouchMinor()); 
-						avgOrientation = (avgOrientation*count++ + event.getOrientation())/count;
 					}
 
 				}
