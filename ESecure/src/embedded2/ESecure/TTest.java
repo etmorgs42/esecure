@@ -76,7 +76,7 @@ public class TTest {
 	 * @throws DimensionMismatchException if the length of the arrays is not equal
 	 * @throws NumberIsTooSmallException if the length of the arrays is &lt; 2
 	 */
-	public double pairedT(final double[] sample1, final double[] sample2)
+	public static double pairedT(final double[] sample1, final double[] sample2)
 			throws NullArgumentException, NoDataException,
 			DimensionMismatchException, NumberIsTooSmallException {
 
@@ -125,7 +125,7 @@ public class TTest {
 	 * @throws NumberIsTooSmallException if the length of the arrays is &lt; 2
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public double pairedTTest(final double[] sample1, final double[] sample2)
+	public static double pairedTTest(final double[] sample1, final double[] sample2)
 			throws NullArgumentException, NoDataException, DimensionMismatchException,
 			NumberIsTooSmallException, MaxCountExceededException {
 
@@ -172,7 +172,7 @@ public class TTest {
 	 * @throws OutOfRangeException if <code>alpha</code> is not in the range (0, 0.5]
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public boolean pairedTTest(final double[] sample1, final double[] sample2,
+	public static boolean pairedTTest(final double[] sample1, final double[] sample2,
 			final double alpha)
 					throws NullArgumentException, NoDataException, DimensionMismatchException,
 					NumberIsTooSmallException, OutOfRangeException, MaxCountExceededException {
@@ -198,7 +198,7 @@ public class TTest {
 	 * @throws NullArgumentException if <code>observed</code> is <code>null</code>
 	 * @throws NumberIsTooSmallException if the length of <code>observed</code> is &lt; 2
 	 */
-	public double t(final double mu, final double[] observed)
+	public static double t(final double mu, final double[] observed)
 			throws NullArgumentException, NumberIsTooSmallException {
 
 		checkSampleData(observed);
@@ -224,7 +224,7 @@ public class TTest {
 	 * @throws NullArgumentException if <code>sampleStats</code> is <code>null</code>
 	 * @throws NumberIsTooSmallException if the number of samples is &lt; 2
 	 */
-	public double t(final double mu, final StatisticalSummary sampleStats)
+	public static double t(final double mu, final StatisticalSummary sampleStats)
 			throws NullArgumentException, NumberIsTooSmallException {
 
 		checkSampleData(sampleStats);
@@ -267,7 +267,7 @@ public class TTest {
 	 * @throws NullArgumentException if the arrays are <code>null</code>
 	 * @throws NumberIsTooSmallException if the length of the arrays is &lt; 2
 	 */
-	public double homoscedasticT(final double[] sample1, final double[] sample2)
+	public static double homoscedasticT(final double[] sample1, final double[] sample2)
 			throws NullArgumentException, NumberIsTooSmallException {
 
 		checkSampleData(sample1);
@@ -307,7 +307,7 @@ public class TTest {
 	 * @throws NullArgumentException if the arrays are <code>null</code>
 	 * @throws NumberIsTooSmallException if the length of the arrays is &lt; 2
 	 */
-	public double t(final double[] sample1, final double[] sample2)
+	public static double t(final double[] sample1, final double[] sample2)
 			throws NullArgumentException, NumberIsTooSmallException {
 
 		checkSampleData(sample1);
@@ -350,7 +350,7 @@ public class TTest {
 	 * @throws NullArgumentException if the sample statistics are <code>null</code>
 	 * @throws NumberIsTooSmallException if the number of samples is &lt; 2
 	 */
-	public double t(final StatisticalSummary sampleStats1,
+	public static double t(final StatisticalSummary sampleStats1,
 			final StatisticalSummary sampleStats2)
 					throws NullArgumentException, NumberIsTooSmallException {
 
@@ -398,7 +398,7 @@ public class TTest {
 	 * @throws NullArgumentException if the sample statistics are <code>null</code>
 	 * @throws NumberIsTooSmallException if the number of samples is &lt; 2
 	 */
-	public double homoscedasticT(final StatisticalSummary sampleStats1,
+	public static double homoscedasticT(final StatisticalSummary sampleStats1,
 			final StatisticalSummary sampleStats2)
 					throws NullArgumentException, NumberIsTooSmallException {
 
@@ -437,7 +437,7 @@ public class TTest {
 	 * @throws NumberIsTooSmallException if the length of the array is &lt; 2
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public double tTest(final double mu, final double[] sample)
+	public static double tTest(final double mu, final double[] sample)
 			throws NullArgumentException, NumberIsTooSmallException,
 			MaxCountExceededException {
 
@@ -484,7 +484,7 @@ public class TTest {
 	 * @throws OutOfRangeException if <code>alpha</code> is not in the range (0, 0.5]
 	 * @throws MaxCountExceededException if an error computing the p-value
 	 */
-	public boolean tTest(final double mu, final double[] sample, final double alpha)
+	public static boolean tTest(final double mu, final double[] sample, final double alpha)
 			throws NullArgumentException, NumberIsTooSmallException,
 			OutOfRangeException, MaxCountExceededException {
 
@@ -522,7 +522,7 @@ public class TTest {
 	 * @throws NumberIsTooSmallException if the number of samples is &lt; 2
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public double tTest(final double mu, final StatisticalSummary sampleStats)
+	public static double tTest(final double mu, final StatisticalSummary sampleStats)
 			throws NullArgumentException, NumberIsTooSmallException,
 			MaxCountExceededException {
 
@@ -570,7 +570,7 @@ public class TTest {
 	 * @throws OutOfRangeException if <code>alpha</code> is not in the range (0, 0.5]
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public boolean tTest(final double mu, final StatisticalSummary sampleStats,
+	public static boolean tTest(final double mu, final StatisticalSummary sampleStats,
 			final double alpha)
 					throws NullArgumentException, NumberIsTooSmallException,
 					OutOfRangeException, MaxCountExceededException {
@@ -617,7 +617,7 @@ public class TTest {
 	 * @throws NumberIsTooSmallException if the length of the arrays is &lt; 2
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public double tTest(final double[] sample1, final double[] sample2)
+	public static double tTest(final double[] sample1, final double[] sample2)
 			throws NullArgumentException, NumberIsTooSmallException,
 			MaxCountExceededException {
 
@@ -663,7 +663,7 @@ public class TTest {
 	 * @throws NumberIsTooSmallException if the length of the arrays is &lt; 2
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public double homoscedasticTTest(final double[] sample1, final double[] sample2)
+	public static double homoscedasticTTest(final double[] sample1, final double[] sample2)
 			throws NullArgumentException, NumberIsTooSmallException,
 			MaxCountExceededException {
 
@@ -729,7 +729,7 @@ public class TTest {
 	 * @throws OutOfRangeException if <code>alpha</code> is not in the range (0, 0.5]
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public boolean tTest(final double[] sample1, final double[] sample2,
+	public static boolean tTest(final double[] sample1, final double[] sample2,
 			final double alpha)
 					throws NullArgumentException, NumberIsTooSmallException,
 					OutOfRangeException, MaxCountExceededException {
@@ -792,7 +792,7 @@ public class TTest {
 	 * @throws OutOfRangeException if <code>alpha</code> is not in the range (0, 0.5]
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public boolean homoscedasticTTest(final double[] sample1, final double[] sample2,
+	public static boolean homoscedasticTTest(final double[] sample1, final double[] sample2,
 			final double alpha)
 					throws NullArgumentException, NumberIsTooSmallException,
 					OutOfRangeException, MaxCountExceededException {
@@ -837,7 +837,7 @@ public class TTest {
 	 * @throws NumberIsTooSmallException if the number of samples is &lt; 2
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public double tTest(final StatisticalSummary sampleStats1,
+	public static double tTest(final StatisticalSummary sampleStats1,
 			final StatisticalSummary sampleStats2)
 					throws NullArgumentException, NumberIsTooSmallException,
 					MaxCountExceededException {
@@ -884,7 +884,7 @@ public class TTest {
 	 * @throws NumberIsTooSmallException if the number of samples is &lt; 2
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public double homoscedasticTTest(final StatisticalSummary sampleStats1,
+	public static double homoscedasticTTest(final StatisticalSummary sampleStats1,
 			final StatisticalSummary sampleStats2)
 					throws NullArgumentException, NumberIsTooSmallException,
 					MaxCountExceededException {
@@ -954,7 +954,7 @@ public class TTest {
 	 * @throws OutOfRangeException if <code>alpha</code> is not in the range (0, 0.5]
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	public boolean tTest(final StatisticalSummary sampleStats1,
+	public static boolean tTest(final StatisticalSummary sampleStats1,
 			final StatisticalSummary sampleStats2,
 			final double alpha)
 					throws NullArgumentException, NumberIsTooSmallException,
@@ -976,7 +976,7 @@ public class TTest {
 	 * @param n2 second sample n
 	 * @return approximate degrees of freedom
 	 */
-	protected double df(double v1, double v2, double n1, double n2) {
+	protected static  double df(double v1, double v2, double n1, double n2) {
 		return (((v1 / n1) + (v2 / n2)) * ((v1 / n1) + (v2 / n2))) /
 				((v1 * v1) / (n1 * n1 * (n1 - 1d)) + (v2 * v2) /
 						(n2 * n2 * (n2 - 1d)));
@@ -991,7 +991,7 @@ public class TTest {
 	 * @param n sample n
 	 * @return t test statistic
 	 */
-	protected double t(final double m, final double mu,
+	protected static  double t(final double m, final double mu,
 			final double v, final double n) {
 		return (m - mu) / FastMath.sqrt(v / n);
 	}
@@ -1009,7 +1009,7 @@ public class TTest {
 	 * @param n2 second sample n
 	 * @return t test statistic
 	 */
-	protected double t(final double m1, final double m2,
+	protected static  double t(final double m1, final double m2,
 			final double v1, final double v2,
 			final double n1, final double n2)  {
 		return (m1 - m2) / FastMath.sqrt((v1 / n1) + (v2 / n2));
@@ -1027,7 +1027,7 @@ public class TTest {
 	 * @param n2 second sample n
 	 * @return t test statistic
 	 */
-	protected double homoscedasticT(final double m1, final double m2,
+	protected static  double homoscedasticT(final double m1, final double m2,
 			final double v1, final double v2,
 			final double n1, final double n2)  {
 		final double pooledVariance = ((n1  - 1) * v1 + (n2 -1) * v2 ) / (n1 + n2 - 2);
@@ -1044,7 +1044,7 @@ public class TTest {
 	 * @return p-value
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	protected double tTest(final double m, final double mu,
+	protected static  double tTest(final double m, final double mu,
 			final double v, final double n)
 					throws MaxCountExceededException {
 
@@ -1069,7 +1069,7 @@ public class TTest {
 	 * @return p-value
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	protected double tTest(final double m1, final double m2,
+	protected static  double tTest(final double m1, final double m2,
 			final double v1, final double v2,
 			final double n1, final double n2)
 					throws MaxCountExceededException {
@@ -1096,7 +1096,7 @@ public class TTest {
 	 * @return p-value
 	 * @throws MaxCountExceededException if an error occurs computing the p-value
 	 */
-	protected double homoscedasticTTest(double m1, double m2,
+	protected static  double homoscedasticTTest(double m1, double m2,
 			double v1, double v2,
 			double n1, double n2)
 					throws MaxCountExceededException {
@@ -1114,7 +1114,7 @@ public class TTest {
 	 * @param alpha significance level
 	 * @throws OutOfRangeException if the significance level is out of bounds.
 	 */
-	private void checkSignificanceLevel(final double alpha)
+	private static void checkSignificanceLevel(final double alpha)
 			throws OutOfRangeException {
 
 		if (alpha <= 0 || alpha > 0.5) {
@@ -1131,7 +1131,7 @@ public class TTest {
 	 * @throws NullArgumentException if {@code data} is {@code null}.
 	 * @throws NumberIsTooSmallException if there is not enough sample data.
 	 */
-	private void checkSampleData(final double[] data)
+	private static void checkSampleData(final double[] data)
 			throws NullArgumentException, NumberIsTooSmallException {
 
 		if (data == null) {
@@ -1152,7 +1152,7 @@ public class TTest {
 	 * @throws NullArgumentException if {@code data} is {@code null}.
 	 * @throws NumberIsTooSmallException if there is not enough sample data.
 	 */
-	private void checkSampleData(final StatisticalSummary stat)
+	private static void checkSampleData(final StatisticalSummary stat)
 			throws NullArgumentException, NumberIsTooSmallException {
 
 		if (stat == null) {

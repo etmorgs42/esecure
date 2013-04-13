@@ -77,6 +77,9 @@ public class KeyPad extends View implements OnTouchListener {
 		paint.setAntiAlias(true);
 		
 		dir = new File(Environment.getExternalStorageDirectory(),FILE_LOCATION);
+		if(!dir.exists()){
+			dir.mkdirs();
+		}
 		Log.v("DBUG","Directory: " + dir);
 	}
 	
@@ -203,6 +206,7 @@ public class KeyPad extends View implements OnTouchListener {
 						myProfile = (Profile)in.readObject();
 						in.close();
 						inFile.close();
+						attempts = 10;
 					}catch(FileNotFoundException e1){
 						Log.v("DBUG","IN - FILE NOT FOUND");
 					}catch(IOException e2){	

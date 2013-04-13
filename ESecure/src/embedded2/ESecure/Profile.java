@@ -10,7 +10,6 @@ public class Profile implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 5720841490748053586L;
-	TTest tester;
 	private ArrayList<Attempt> history;
 	private ArrayList<Double> durations;
 	private ArrayList<Double> pressures;
@@ -50,7 +49,6 @@ public class Profile implements Serializable{
 		majors = new ArrayList<Double>();
 		minors = new ArrayList<Double>();
 		gaps = new ArrayList<Double>();
-		tester = new TTest();
 		//history.add(first);
 		count = 0;
 	}
@@ -68,7 +66,7 @@ public class Profile implements Serializable{
 		return true;
 	}else if (newAttempt.getCode().toString().equals(history.get(count - 1).getCode().toString())) {
 			if (count < 10) {
-				Log.v("CODE","new");
+//				Log.v("CODE","new");
 				history.add(newAttempt);
 				durations.addAll(newAttempt.getDurations());
 				pressures.addAll(newAttempt.getPressures());
@@ -79,7 +77,7 @@ public class Profile implements Serializable{
 				this.updateStats();
 				return true;
 			} else {
-				Log.v("CODE","attempt");
+//				Log.v("CODE","attempt");
 				float score = 0;
 				
 				
@@ -93,7 +91,7 @@ public class Profile implements Serializable{
 				for(int i = 0; i < sample2.length; i++){
 					sample2[i] = newAttempt.getDurations().get(i).doubleValue();
 				}
-				testDuration = tester.tTest(sample1,sample2,alpha);
+				testDuration = TTest.tTest(sample1,sample2,alpha);
 				Log.v("DBUG","testDuration: "+testDuration);
 				
 				for(int i = 0; i < sample1.length; i++){
@@ -102,7 +100,7 @@ public class Profile implements Serializable{
 				for(int i = 0; i < sample2.length; i++){
 					sample2[i] = newAttempt.getPressures().get(i).doubleValue();
 				}
-				testPressure = tester.tTest(sample1,sample2,alpha);
+				testPressure = TTest.tTest(sample1,sample2,alpha);
 				
 				for(int i = 0; i < sample1.length; i++){
 					sample1[i] = majors.get(i).doubleValue();
@@ -110,7 +108,7 @@ public class Profile implements Serializable{
 				for(int i = 0; i < sample2.length; i++){
 					sample2[i] = newAttempt.getMajors().get(i).doubleValue();
 				}
-				testMajor = tester.tTest(sample1,sample2,alpha);
+				testMajor = TTest.tTest(sample1,sample2,alpha);
 				
 				for(int i = 0; i < sample1.length; i++){
 					sample1[i] = minors.get(i).doubleValue();
@@ -118,7 +116,7 @@ public class Profile implements Serializable{
 				for(int i = 0; i < sample2.length; i++){
 					sample2[i] = newAttempt.getMinors().get(i).doubleValue();
 				}
-				testMinor = tester.tTest(sample1,sample2,alpha);
+				testMinor = TTest.tTest(sample1,sample2,alpha);
 				
 				sample1 = new double[gaps.size()];
 				sample2 = new double[newAttempt.getGaps().size()];
@@ -128,16 +126,17 @@ public class Profile implements Serializable{
 				for(int i = 0; i < sample2.length; i++){
 					sample2[i] = newAttempt.getGaps().get(i).doubleValue();
 				}
-				testGaps = tester.tTest(sample1,sample2,alpha);
+				testGaps = TTest.tTest(sample1,sample2,alpha);
 				
-				Log.v("DBUG","weightDuration: "+weightDuration);
-				Log.v("DBUG","weights  : "+weightDuration+" "+weightPressure+" "+weightMajorAxis+" "+weightDuration+" "+weightMinorAxis+" "+weightGaps+" ");
+//				Log.v("DBUG","weightDuration: "+weightDuration);
+//				Log.v("DBUG","weights  : "+weightDuration+" "+weightPressure+" "+weightMajorAxis+" "+weightDuration+" "+weightMinorAxis+" "+weightGaps+" ");
 				score += weightDuration*(testDuration?0:1);
 				score += weightPressure*(testPressure?0:1);
 				score += weightMajorAxis*(testMajor?0:1);
 				score += weightMinorAxis*(testMinor?0:1);
 				score += weightGaps*(testGaps?0:1);
 				Log.v("DBUG","score: "+score);
+				Log.v("DBUG","maxscore: "+maxScore);
 				if(score > 0.75*maxScore){
 					history.add(newAttempt);
 					durations.addAll(newAttempt.getDurations());
@@ -216,15 +215,15 @@ public class Profile implements Serializable{
 		cvMinorAxis = stdMinorAxis/avgMinorAxis;
 		cvGaps = stdGap/avgGap;
 		float sumCv = cvDuration + cvPressure + cvMajorAxis + cvMinorAxis + cvGaps;
-		Log.v("DBUG","cvDuration: "+cvDuration);
-		Log.v("DBUG","cvDuration + cvPressure + cvMajorAxis + cvMinorAxis + cvGaps");
-		Log.v("DBUG",""+cvDuration +" "+ cvPressure+" " + cvMajorAxis +" "+ cvMinorAxis+" "+ cvGaps);
+//		Log.v("DBUG","cvDuration: "+cvDuration);
+//		Log.v("DBUG","cvDuration + cvPressure + cvMajorAxis + cvMinorAxis + cvGaps");
+//		Log.v("DBUG",""+cvDuration +" "+ cvPressure+" " + cvMajorAxis +" "+ cvMinorAxis+" "+ cvGaps);
 		weightDuration = cvDuration/sumCv;
 		weightPressure = cvPressure/sumCv;
 		weightMajorAxis = cvMajorAxis/sumCv;
 		weightMinorAxis = cvMinorAxis/sumCv;
 		weightGaps = cvGaps/sumCv;
-		Log.v("DBUG", "sumCv: "+sumCv);
+//		Log.v("DBUG", "sumCv: "+sumCv);
 		weightDuration = 1.0f/weightDuration;
 		weightPressure = 1.0f/weightPressure;
 		weightMajorAxis = 1.0f/weightMajorAxis;
