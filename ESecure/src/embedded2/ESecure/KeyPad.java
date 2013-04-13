@@ -1,9 +1,12 @@
 package embedded2.ESecure;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,8 +14,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.os.Environment;
 import android.os.Vibrator;
-import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -22,9 +25,10 @@ import android.view.WindowManager;
 
 public class KeyPad extends View implements OnTouchListener {
 	private static final String TAG = "DrawView";
-	Random r;
-	int numDots = 15;
-	List<myPoint> myPoints = new ArrayList<myPoint>();
+	private static final String FILE_LOCATION = "/ESecure/users/";
+//	Random r;
+//	int numDots = 15;
+//	List<myPoint> myPoints = new ArrayList<myPoint>();
 	Paint paint = new Paint();
 	Vibrator v;
 	WindowManager wm;
@@ -45,18 +49,23 @@ public class KeyPad extends View implements OnTouchListener {
 	String enterCode;
 	String status;
 	RectF rect;
+	FileOutputStream outFile = null;
+	ObjectOutputStream out = null;
+	FileInputStream  inFile = null;
+	ObjectInputStream  in = null;
+	File file;
+	File dir;
 
 	public KeyPad(Context context, Vibrator v) {
 		super(context);
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 		this.v = v;
-		r = new Random();
+//		r = new Random();
 		rect = new RectF();
 		this.setOnTouchListener(this);
 		wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		size = new Point();
-
 		display = wm.getDefaultDisplay();
 		display.getSize(size);
 		enterCode = "";
@@ -66,11 +75,37 @@ public class KeyPad extends View implements OnTouchListener {
 		paint.setColor(Color.GREEN);
 		paint.setStrokeWidth(10);
 		paint.setAntiAlias(true);
+		
+		dir = new File(Environment.getExternalStorageDirectory(),FILE_LOCATION);
+		Log.v("DBUG","Directory: " + dir);
 	}
 	
 	public void newPassword(){
 		myProfile = new Profile();
 		attempts = 0;
+	}
+
+	public void finish(){
+		if(attempts == 10){
+			Log.v("DBUG","Finishing and saving");
+			file = new File(dir,enterCode);
+			Log.v("DBUG","Filename: " + file);
+			try{
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				outFile = new FileOutputStream(file);
+				out = new ObjectOutputStream(outFile);
+				out.writeObject(myProfile);
+				out.close();
+				outFile.close();
+			}catch(FileNotFoundException e1){
+				Log.v("DBUG","OUT - FILE NOT FOUND");
+			}catch(IOException e2){	
+				Log.v("DBUG","OUT - IOEXCEPTION");
+				e2.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -88,9 +123,9 @@ public class KeyPad extends View implements OnTouchListener {
 //		for (int i = 1; i < myPoints.size(); i++) {
 //			canvas.drawLine(myPoints.get(i - 1).x, myPoints.get(i - 1).y, myPoints.get(i).x, myPoints.get(i).y, paint);
 //		}
-		while (myPoints.size() > numDots) {
-			myPoints.remove(0);
-		}
+//		while (myPoints.size() > numDots) {
+//			myPoints.remove(0);
+//		}
 
 		// Vibrate for 500 milliseconds
 		// v.vibrate(15);
@@ -129,15 +164,15 @@ public class KeyPad extends View implements OnTouchListener {
 		//Log.v("PRESSURE", "" + event.getSize());
 
 		// Log.v
-		myPoint myPoint = new myPoint();
-		x = myPoint.x = event.getX();
-		y = myPoint.y = event.getY();
-		Log.v("TOUCH","x: " + x + " y: " + y);
-		myPoint.r = r.nextInt(255);
-		myPoint.g = r.nextInt(255);
-		myPoint.b = r.nextInt(255);
-		myPoints.add(myPoint);
-		Log.d("POINT LOCATION", "" + myPoint);
+//		myPoint myPoint = new myPoint();
+		x = event.getX();
+		y = event.getY();
+		//Log.v("DBUG","TOUCH x: " + x + " y: " + y);
+//		myPoint.r = r.nextInt(255);
+//		myPoint.g = r.nextInt(255);
+//		myPoint.b = r.nextInt(255);
+//		myPoints.add(myPoint);
+//		Log.d("POINT LOCATION", "" + myPoint);
 		float major, minor;
 		major = event.getTouchMajor(0);
 		minor = event.getTouchMinor(0);
@@ -151,15 +186,33 @@ public class KeyPad extends View implements OnTouchListener {
 		Log.v("COLLECTED", "entryMode = " + entryMode);
 		if(keyChar == 'E'){
 			if(newAttempt != null && ((System.currentTimeMillis()) - lastE > 500)){
-				Log.v("COLLECTED","Attempt");
+				Log.v("DBUG","Attempt Logged");
 				enterCode = newAttempt.getCode().toString();
-				Log.v("COLLECTED",enterCode);
+				Log.v("DBUG","Code = " + enterCode);
 				lastE = System.currentTimeMillis();
 //				if(myProfile == null){
 //					myProfile = new Profile(newAttempt);
 //				}else{
+				file = new File(dir,enterCode);
+				Log.v("DBUG","Filename: " + file);
+				if(file.exists()){
+					Log.v("DBUG","FILE EXISTS");
+					try{
+						inFile = new FileInputStream(file);
+						in = new ObjectInputStream(inFile);
+						myProfile = (Profile)in.readObject();
+						in.close();
+						inFile.close();
+					}catch(FileNotFoundException e1){
+						Log.v("DBUG","IN - FILE NOT FOUND");
+					}catch(IOException e2){	
+						Log.v("DBUG","IN - IOEXCEPTION");
+					} catch (ClassNotFoundException e3) {
+						Log.v("DBUG","IN - CLASS NOT FOUND");
+					}
+				}
 				if(myProfile != null){
-					Log.v("PROFILE", "add");
+					Log.v("DBUG", "Added attempt to profile");
 					boolean result = myProfile.add(newAttempt);
 					status="";
 					if(result && attempts < 10){
@@ -332,21 +385,21 @@ public class KeyPad extends View implements OnTouchListener {
 		return 'x';
 	}
 
-	class myPoint {
-		float x, y;
-		int r, g, b;
+//	class myPoint {
+//		float x, y;
+//		int r, g, b;
+//
+//		@Override
+//		public String toString() {
+//			return x + ", " + y;
+//		}
+//	}
 
-		@Override
-		public String toString() {
-			return x + ", " + y;
-		}
-	}
-
-	public RectF myOval(float width, float height, float x, float y) {
-		float halfW = width / 2;
-		float halfH = height / 2;
-		return new RectF(x - halfW, y - halfH, x + halfW, y + halfH);
-	}
+//	public RectF myOval(float width, float height, float x, float y) {
+//		float halfW = width / 2;
+//		float halfH = height / 2;
+//		return new RectF(x - halfW, y - halfH, x + halfW, y + halfH);
+//	}
 
 	public void setColor(int i) {
 		// TODO Auto-generated method stub

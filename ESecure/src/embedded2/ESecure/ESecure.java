@@ -11,9 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-public class ESecure extends Activity implements SensorListener {
-	KeyPad d;
-	SensorManager sm;
+public class ESecure extends Activity {
+	KeyPad k;
+//	SensorManager sm;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -24,11 +24,11 @@ public class ESecure extends Activity implements SensorListener {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-		sm.registerListener(this, SensorManager.SENSOR_ORIENTATION | SensorManager.SENSOR_ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL);
-		d = new KeyPad(this, v);
-		setContentView(d);
-		d.requestFocus();
+//		sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+//		sm.registerListener(this, SensorManager.SENSOR_ORIENTATION | SensorManager.SENSOR_ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL);
+		k = new KeyPad(this, v);
+		setContentView(k);
+		k.requestFocus();
 		// Vibrate for 500 milliseconds
 		v.vibrate(500);
 	}
@@ -40,42 +40,43 @@ public class ESecure extends Activity implements SensorListener {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
-	public void onSensorChanged(int sensor, float[] values) {
-		synchronized (this) {
-
-//			if (sensor == SensorManager.SENSOR_ORIENTATION) {
-//				Log.v("Orientation X: ", "" + values[0]);
-//				Log.v("Orientation Y: ", "" + values[1]);
-//				Log.v("Orientation Z: ", "" + values[2]);
-//			}
-//			if (sensor == SensorManager.SENSOR_ACCELEROMETER) {
-//				Log.v("Accel X: ", "" + values[0]);
-//				Log.v("Accel Y: ", "" + values[1]);
-//				Log.v("Accel Z: ", "" + values[2]);
-//			}
-		}
-	}
+//	@SuppressWarnings("deprecation")
+//	public void onSensorChanged(int sensor, float[] values) {
+//		synchronized (this) {
+//
+////			if (sensor == SensorManager.SENSOR_ORIENTATION) {
+////				Log.v("Orientation X: ", "" + values[0]);
+////				Log.v("Orientation Y: ", "" + values[1]);
+////				Log.v("Orientation Z: ", "" + values[2]);
+////			}
+////			if (sensor == SensorManager.SENSOR_ACCELEROMETER) {
+////				Log.v("Accel X: ", "" + values[0]);
+////				Log.v("Accel Y: ", "" + values[1]);
+////				Log.v("Accel Z: ", "" + values[2]);
+////			}
+//		}
+//	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onResume() {
 		super.onResume();
-		sm.registerListener(this, SensorManager.SENSOR_ORIENTATION | SensorManager.SENSOR_ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL);
+		//sm.registerListener(this, SensorManager.SENSOR_ORIENTATION | SensorManager.SENSOR_ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onStop() {
-		sm.unregisterListener(this);
 		super.onStop();
+		k.finish();
+		
 	}
 
-	@Override
-	public void onAccuracyChanged(int arg0, int arg1) {
-		// TODO Auto-generated method stub
-
-	}
+//	@Override
+//	public void onAccuracyChanged(int arg0, int arg1) {
+//		// TODO Auto-generated method stub
+//
+//	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -85,26 +86,29 @@ public class ESecure extends Activity implements SensorListener {
 			return true;
 		case R.id.color_settings:
 			return true;
+		case R.id.exit:
+			k.finish();
+			System.exit(0);
 		case R.id.new_pass:
-			d.newPassword();
+			k.newPassword();
 			return true;
 		case R.id.red:
-			d.setColor(1);
+			k.setColor(1);
 			break;
 		case R.id.orange:
-			d.setColor(2);
+			k.setColor(2);
 			break;
 		case R.id.yellow:
-			d.setColor(3);
+			k.setColor(3);
 			break;
 		case R.id.green:
-			d.setColor(4);
+			k.setColor(4);
 			break;
 		case R.id.blue:
-			d.setColor(5);
+			k.setColor(5);
 			break;
 		case R.id.violet:
-			d.setColor(6);
+			k.setColor(6);
 			break;
 		default:
 			return super.onOptionsItemSelected(item);

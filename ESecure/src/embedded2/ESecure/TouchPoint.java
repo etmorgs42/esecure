@@ -15,7 +15,7 @@ public class TouchPoint implements Serializable{
 	private long start,end;
 	private char keyPress;
 	
-	TouchPoint(float x, float y, long start){
+	public TouchPoint(float x, float y, long start){
 		this.x = x;
 		this.y = y;
 		this.start = start;
