@@ -43,6 +43,7 @@ public class KeyPad extends View implements OnTouchListener {
 	long lastE = 0;
 	int count,attempts;
 	float avgPressure, avgMajorAxis, avgMinorAxis,avgDist;
+	float maxPressure, maxMajorAxis, maxMinorAxis, maxDist;
 	boolean training = false;
 	Attempt newAttempt;
 	TouchPoint newPoint;
@@ -284,13 +285,17 @@ public class KeyPad extends View implements OnTouchListener {
 					lastChar = keyChar;
 					lastTime = System.currentTimeMillis();
 					count = 1;
-					avgPressure = event.getPressure();
-					avgMajorAxis = event.getTouchMajor();
-					avgMinorAxis = event.getTouchMinor();
+					maxPressure = event.getPressure();
+					maxMajorAxis = event.getTouchMajor();
+					maxMinorAxis = event.getTouchMinor();
+//					avgPressure = event.getPressure();
+//					avgMajorAxis = event.getTouchMajor();
+//					avgMinorAxis = event.getTouchMinor();
 					float tdx = x - centers[Integer.parseInt(""+keyChar)][0];
 					float tdy = y - centers[Integer.parseInt(""+keyChar)][1];
 					touchDist = (float)Math.sqrt(tdx*tdx + tdy*tdy);
-					avgDist = touchDist;
+					maxDist = touchDist;
+//					avgDist = touchDist;
 				}else{
 					float dx = x - lastx;
 					float dy = y - lasty;
@@ -301,9 +306,9 @@ public class KeyPad extends View implements OnTouchListener {
 						entryMode++;
 						newPoint = new TouchPoint(lastx,lasty,lastTime);
 						newPoint.setEnd(System.currentTimeMillis());
-						newPoint.setPressure(avgPressure);
-						newPoint.setShape(avgMajorAxis, avgMinorAxis);
-						newPoint.setDist(touchDist);
+						newPoint.setPressure(maxPressure);
+						newPoint.setShape(maxMajorAxis, maxMinorAxis);
+						newPoint.setDist(maxDist);
 						newPoint.setKey(keyChar);
 						if(newAttempt == null){
 							newAttempt = new Attempt(0,newPoint);
@@ -314,26 +319,34 @@ public class KeyPad extends View implements OnTouchListener {
 						lasty = y;
 						lastChar = keyChar;
 						lastTime = System.currentTimeMillis();
-						avgPressure = event.getPressure();
-						avgMajorAxis = event.getTouchMajor();
-						avgMinorAxis = event.getTouchMinor();
+						maxPressure = event.getPressure();
+						maxMajorAxis = event.getTouchMajor();
+						maxMinorAxis = event.getTouchMinor();
+//						avgPressure = event.getPressure();
+//						avgMajorAxis = event.getTouchMajor();
+//						avgMinorAxis = event.getTouchMinor();
 						float tdx = x - centers[Integer.parseInt(""+keyChar)][0];
 						float tdy = y - centers[Integer.parseInt(""+keyChar)][1];
 						touchDist = (float)Math.sqrt(tdx*tdx + tdy*tdy);
-						avgDist = touchDist;
+//						avgDist = touchDist;
+						maxDist = touchDist;
 					}else{ //same point just update stats
-						avgPressure = ((avgPressure*count) + event.getPressure());
-						avgMajorAxis = ((avgMajorAxis*count) + event.getTouchMajor());
-						avgMinorAxis = ((avgMinorAxis*count) + event.getTouchMinor());
+						maxPressure = Math.max(maxPressure, event.getPressure());
+						maxMajorAxis = Math.max(maxMajorAxis, event.getTouchMajor());
+						maxMinorAxis = Math.max(maxMinorAxis, event.getTouchMinor());
+//						avgPressure = ((avgPressure*count) + event.getPressure());
+//						avgMajorAxis = ((avgMajorAxis*count) + event.getTouchMajor());
+//						avgMinorAxis = ((avgMinorAxis*count) + event.getTouchMinor());
 						float tdx = x - centers[Integer.parseInt(""+keyChar)][0];
 						float tdy = y - centers[Integer.parseInt(""+keyChar)][1];
 						touchDist = (float)Math.sqrt(tdx*tdx + tdy*tdy);
-						avgDist = (avgDist*count) + touchDist;
-						count++;
-						avgPressure = avgPressure/count;
-						avgMajorAxis = avgMajorAxis/count;
-						avgMinorAxis = avgMinorAxis/count;
-						avgDist = avgDist/count;
+						maxDist = Math.max(maxDist, touchDist);
+//						avgDist = (avgDist*count) + touchDist;
+//						count++;
+//						avgPressure = avgPressure/count;
+//						avgMajorAxis = avgMajorAxis/count;
+//						avgMinorAxis = avgMinorAxis/count;
+//						avgDist = avgDist/count;
 					}
 
 				}
@@ -345,9 +358,12 @@ public class KeyPad extends View implements OnTouchListener {
 					lastChar = keyChar;
 					lastTime = System.currentTimeMillis();
 					count = 1;
-					avgPressure = event.getPressure();
-					avgMajorAxis = event.getTouchMajor();
-					avgMinorAxis = event.getTouchMinor();
+					maxPressure = event.getPressure();
+					maxMajorAxis = event.getTouchMajor();
+					maxMinorAxis = event.getTouchMinor();
+//					avgPressure = event.getPressure();
+//					avgMajorAxis = event.getTouchMajor();
+//					avgMinorAxis = event.getTouchMinor();
 				}else{
 //					float dx = x - lastx;
 //					float dy = y - lasty;
@@ -357,8 +373,9 @@ public class KeyPad extends View implements OnTouchListener {
 						Log.v("COLLECTED", "Point");
 						newPoint = new TouchPoint(lastx,lasty,lastTime);
 						newPoint.setEnd(System.currentTimeMillis());
-						newPoint.setPressure(avgPressure);
-						newPoint.setShape(avgMajorAxis, avgMinorAxis);
+						newPoint.setPressure(maxPressure);
+						newPoint.setShape(maxMajorAxis, maxMinorAxis);
+						newPoint.setDist(maxDist);
 						newPoint.setKey(keyChar);
 						if(newAttempt == null){
 							newAttempt = new Attempt(1,newPoint);
@@ -369,17 +386,34 @@ public class KeyPad extends View implements OnTouchListener {
 						lasty = y;
 						lastChar = keyChar;
 						lastTime = System.currentTimeMillis();
-						avgPressure = event.getPressure();
-						avgMajorAxis = event.getTouchMajor();
-						avgMinorAxis = event.getTouchMinor();
+						maxPressure = event.getPressure();
+						maxMajorAxis = event.getTouchMajor();
+						maxMinorAxis = event.getTouchMinor();
+//						avgPressure = event.getPressure();
+//						avgMajorAxis = event.getTouchMajor();
+//						avgMinorAxis = event.getTouchMinor();
+						float tdx = x - centers[Integer.parseInt(""+keyChar)][0];
+						float tdy = y - centers[Integer.parseInt(""+keyChar)][1];
+						touchDist = (float)Math.sqrt(tdx*tdx + tdy*tdy);
+//						avgDist = touchDist;
+						maxDist = touchDist;
 					}else{ //same point just update stats
-						avgPressure = ((avgPressure*count) + event.getPressure());
-						avgMajorAxis = ((avgMajorAxis*count) + event.getTouchMajor());
-						avgMinorAxis = ((avgMinorAxis*count) + event.getTouchMinor());
-						count++;
-						avgPressure = avgPressure/count;
-						avgMajorAxis = avgMajorAxis/count;
-						avgMinorAxis = avgMinorAxis/count;
+						maxPressure = Math.max(maxPressure, event.getPressure());
+						maxMajorAxis = Math.max(maxMajorAxis, event.getTouchMajor());
+						maxMinorAxis = Math.max(maxMinorAxis, event.getTouchMinor());
+//						avgPressure = ((avgPressure*count) + event.getPressure());
+//						avgMajorAxis = ((avgMajorAxis*count) + event.getTouchMajor());
+//						avgMinorAxis = ((avgMinorAxis*count) + event.getTouchMinor());
+						float tdx = x - centers[Integer.parseInt(""+keyChar)][0];
+						float tdy = y - centers[Integer.parseInt(""+keyChar)][1];
+						touchDist = (float)Math.sqrt(tdx*tdx + tdy*tdy);
+						maxDist = Math.max(maxDist, touchDist);
+//						avgDist = (avgDist*count) + touchDist;
+//						count++;
+//						avgPressure = avgPressure/count;
+//						avgMajorAxis = avgMajorAxis/count;
+//						avgMinorAxis = avgMinorAxis/count;
+//						avgDist = avgDist/count;
 					}
 
 				}

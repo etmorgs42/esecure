@@ -97,7 +97,7 @@ public class Profile implements Serializable{
 
 					double [] sample1 = new double[durations.size()];
 					double [] sample2 = new double[newAttempt.getPoints().size()];
-					double alpha = .2;
+					double alpha = .1;
 					for(int i = 0; i < sample1.length; i++){
 						sample1[i] = durations.get(i).doubleValue();
 					}
