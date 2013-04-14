@@ -112,7 +112,7 @@ public class KeyPad extends View implements OnTouchListener {
 	}
 	
 	public void newPassword(){
-		this.save();
+		//this.save();
 		myProfile = new Profile();
 		attempts = 0;
 		training = true;

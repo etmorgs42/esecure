@@ -97,7 +97,7 @@ public class Profile implements Serializable{
 
 					double [] sample1 = new double[durations.size()];
 					double [] sample2 = new double[newAttempt.getPoints().size()];
-					double alpha = .05;
+					double alpha = .2;
 					for(int i = 0; i < sample1.length; i++){
 						sample1[i] = durations.get(i).doubleValue();
 					}
@@ -138,6 +138,7 @@ public class Profile implements Serializable{
 						sample2[i] = newAttempt.getDists().get(i).doubleValue();
 					}
 					testDist = TTest.tTest(sample1,sample2,alpha);
+					Log.v("DBUG","testDist: "+testDist);
 
 					sample1 = new double[gaps.size()];
 					sample2 = new double[newAttempt.getGaps().size()];
@@ -159,7 +160,7 @@ public class Profile implements Serializable{
 					score += weightDist*(testDist?0:1);
 					Log.v("DBUG","score: "+score);
 					Log.v("DBUG","maxscore: "+maxScore);
-					if(score >= 0.5*maxScore){
+					if(score >= 0.75*maxScore){
 						history.add(newAttempt);
 						durations.addAll(newAttempt.getDurations());
 						pressures.addAll(newAttempt.getPressures());
@@ -245,7 +246,7 @@ public class Profile implements Serializable{
 		cvMinorAxis = stdMinorAxis/avgMinorAxis;
 		cvDist = stdDist/avgDist;
 		cvGaps = stdGap/avgGap;
-		float sumCv = cvDuration + cvPressure + cvMajorAxis + cvMinorAxis + cvGaps;
+		float sumCv = cvDuration + cvPressure + cvMajorAxis + cvMinorAxis + cvGaps + cvDist;
 		//		Log.v("DBUG","cvDuration: "+cvDuration);
 		//		Log.v("DBUG","cvDuration + cvPressure + cvMajorAxis + cvMinorAxis + cvGaps");
 		//		Log.v("DBUG",""+cvDuration +" "+ cvPressure+" " + cvMajorAxis +" "+ cvMinorAxis+" "+ cvGaps);
