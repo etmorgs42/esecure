@@ -84,6 +84,7 @@ public class KeyPad extends View implements OnTouchListener {
 	}
 	
 	public void newPassword(){
+		this.save();
 		myProfile = new Profile();
 		attempts = 0;
 	}
@@ -224,7 +225,6 @@ public class KeyPad extends View implements OnTouchListener {
 						status = "Attempt" + attempts;
 					}else if(result){
 						status = "Pass";
-						this.save();
 					}else{
 						status = "Fail";
 					}

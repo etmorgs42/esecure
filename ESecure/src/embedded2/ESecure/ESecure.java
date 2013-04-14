@@ -71,6 +71,11 @@ public class ESecure extends Activity {
 		k.save();
 		
 	}
+	
+	protected void onPause() {
+		super.onPause();
+		k.save();
+	}
 
 //	@Override
 //	public void onAccuracyChanged(int arg0, int arg1) {
