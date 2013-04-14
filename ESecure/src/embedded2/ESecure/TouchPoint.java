@@ -9,6 +9,7 @@ public class TouchPoint implements Serializable{
 	 */
 	private static final long serialVersionUID = 5295750412613428842L;
 	private float x,y;
+	private float dist;
 	private long duration;
 	private float pressure;
 	private float majorAxis,minorAxis; //major and minor axes of touch ellipse
@@ -39,11 +40,16 @@ public class TouchPoint implements Serializable{
 		duration = end - start;
 	}
 	
+	void setDist(float dist){
+		this.dist = dist;
+	}
+	
 	float getX(){ return x; }
 	float getY(){ return y; }
 	float getMajorAxis(){ return majorAxis; }
 	float getMinorAxis(){ return minorAxis; }
 	float getPressure(){ return pressure; }
+	float getDist(){ return dist; }
 	char getKey(){ return keyPress; }
 	long getStart(){ return start; }
 	long getEnd(){ return end; }

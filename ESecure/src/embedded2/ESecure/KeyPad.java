@@ -36,17 +36,19 @@ public class KeyPad extends View implements OnTouchListener {
 	Point size;
 	int width, height;
 	float lastx = 0.0f,lasty = 0.0f,x = 0.0f,y = 0.0f;
-	float dist;
+	float dist,touchDist;
 	char keyChar,lastChar;
 	int entryMode = 1;
 	long lastTime;
 	long lastE = 0;
 	int count,attempts;
-	float avgPressure, avgMajorAxis, avgMinorAxis;
+	float avgPressure, avgMajorAxis, avgMinorAxis,avgDist;
+	boolean training = false;
 	Attempt newAttempt;
 	TouchPoint newPoint;
 	Profile myProfile;
 	String enterCode;
+	String loadedProfile;
 	String status;
 	RectF rect;
 	FileOutputStream outFile = null;
@@ -55,6 +57,8 @@ public class KeyPad extends View implements OnTouchListener {
 	ObjectInputStream  in = null;
 	File file;
 	File dir;
+	
+	float [][] centers; 
 
 	public KeyPad(Context context, Vibrator v) {
 		super(context);
@@ -69,6 +73,7 @@ public class KeyPad extends View implements OnTouchListener {
 		display = wm.getDefaultDisplay();
 		display.getSize(size);
 		enterCode = "";
+		loadedProfile = "";
 		status = "";
 		width = size.x;
 		height = size.y;
@@ -81,12 +86,36 @@ public class KeyPad extends View implements OnTouchListener {
 			dir.mkdirs();
 		}
 		Log.v("DBUG","Directory: " + dir);
+		
+		centers = new float[10][2];
+		
+		centers[0][0] = (float).5*width;
+		centers[0][1] = (float)0.85*height;
+		centers[1][0] = (float)(1.0/6.0)*width;
+		centers[1][1] = (float)0.55*height;
+		centers[2][0] = (float).5*width;
+		centers[2][1] = (float)0.55*height;
+		centers[3][0] = (float)(5.0/6.0)*width;
+		centers[3][1] = (float)0.55*height;
+		centers[4][0] = (float)(1.0/6.0)*width;
+		centers[4][1] = (float)0.65*height;
+		centers[5][0] = (float).5*width;
+		centers[5][1] = (float)0.65*height;
+		centers[6][0] = (float)(5.0/6.0)*width;
+		centers[6][1] = (float)0.65*height;
+		centers[7][0] = (float)(1.0/6.0)*width;
+		centers[7][1] = (float)0.75*height;
+		centers[8][0] = (float).5*width;
+		centers[8][1] = (float)0.75*height;
+		centers[9][0] = (float)(5.0/6.0)*width;
+		centers[9][1] = (float)0.75*height;
 	}
 	
 	public void newPassword(){
 		this.save();
 		myProfile = new Profile();
 		attempts = 0;
+		training = true;
 	}
 
 	public void save(){
@@ -181,48 +210,54 @@ public class KeyPad extends View implements OnTouchListener {
 		major = event.getTouchMajor(0);
 		minor = event.getTouchMinor(0);
 		//rect = myOval(minor, major, event.getX(), event.getY());
-		Log.v("MAJOR/MINOR", "" + major + ":::" + minor);
-		invalidate();
+//		Log.v("MAJOR/MINOR", "" + major + ":::" + minor);
 		keyChar = calcButtons(event.getX(), event.getY());
 
 		
 
-		Log.v("COLLECTED", "entryMode = " + entryMode);
+//		Log.v("COLLECTED", "entryMode = " + entryMode);
 		if(keyChar == 'E'){
 			if(newAttempt != null && ((System.currentTimeMillis()) - lastE > 500)){
 				Log.v("DBUG","Attempt Logged");
 				enterCode = newAttempt.getCode().toString();
 				Log.v("DBUG","Code = " + enterCode);
 				lastE = System.currentTimeMillis();
-//				if(myProfile == null){
-//					myProfile = new Profile(newAttempt);
-//				}else{
-				file = new File(dir,enterCode);
-				Log.v("DBUG","Filename: " + file);
-				if(file.exists()){
-					Log.v("DBUG","FILE EXISTS");
-					try{
-						inFile = new FileInputStream(file);
-						in = new ObjectInputStream(inFile);
-						myProfile = (Profile)in.readObject();
-						in.close();
-						inFile.close();
-						attempts = 10;
-					}catch(FileNotFoundException e1){
-						Log.v("DBUG","IN - FILE NOT FOUND");
-					}catch(IOException e2){	
-						Log.v("DBUG","IN - IOEXCEPTION");
-					} catch (ClassNotFoundException e3) {
-						Log.v("DBUG","IN - CLASS NOT FOUND");
+				//				if(myProfile == null){
+				//					myProfile = new Profile(newAttempt);
+				//				}else{
+				if(!loadedProfile.equals(enterCode)){
+					file = new File(dir,enterCode);
+					Log.v("DBUG","Filename: " + file);
+					if(!training && file.exists()){
+						Log.v("DBUG","FILE EXISTS");
+						try{
+							inFile = new FileInputStream(file);
+							in = new ObjectInputStream(inFile);
+							myProfile = (Profile)in.readObject();
+							in.close();
+							inFile.close();
+							attempts = 10;
+							loadedProfile = enterCode;
+						}catch(FileNotFoundException e1){
+							Log.v("DBUG","IN - FILE NOT FOUND");
+						}catch(IOException e2){	
+							Log.v("DBUG","IN - IOEXCEPTION");
+						} catch (ClassNotFoundException e3) {
+							Log.v("DBUG","IN - CLASS NOT FOUND");
+						}
 					}
 				}
+				
 				if(myProfile != null){
 					Log.v("DBUG", "Added attempt to profile");
 					boolean result = myProfile.add(newAttempt);
-					status="";
 					if(result && attempts < 10){
 						attempts++;
-						status = "Attempt" + attempts;
+						status = "Attempt " + attempts;
+						if(attempts == 10){
+							loadedProfile = enterCode;
+							this.save();
+						}
 					}else if(result){
 						status = "Pass";
 					}else{
@@ -238,6 +273,7 @@ public class KeyPad extends View implements OnTouchListener {
 		}else if(keyChar == 'x'){
 			Log.v("COLLECTED","None");
 		}else{
+			status="";
 			if(event.getAction() == MotionEvent.ACTION_UP && entryMode < 2){
 				entryMode = 0;
 			}
@@ -251,6 +287,10 @@ public class KeyPad extends View implements OnTouchListener {
 					avgPressure = event.getPressure();
 					avgMajorAxis = event.getTouchMajor();
 					avgMinorAxis = event.getTouchMinor();
+					float tdx = x - centers[Integer.parseInt(""+keyChar)][0];
+					float tdy = y - centers[Integer.parseInt(""+keyChar)][1];
+					touchDist = (float)Math.sqrt(tdx*tdx + tdy*tdy);
+					avgDist = touchDist;
 				}else{
 					float dx = x - lastx;
 					float dy = y - lasty;
@@ -263,6 +303,7 @@ public class KeyPad extends View implements OnTouchListener {
 						newPoint.setEnd(System.currentTimeMillis());
 						newPoint.setPressure(avgPressure);
 						newPoint.setShape(avgMajorAxis, avgMinorAxis);
+						newPoint.setDist(touchDist);
 						newPoint.setKey(keyChar);
 						if(newAttempt == null){
 							newAttempt = new Attempt(0,newPoint);
@@ -276,14 +317,23 @@ public class KeyPad extends View implements OnTouchListener {
 						avgPressure = event.getPressure();
 						avgMajorAxis = event.getTouchMajor();
 						avgMinorAxis = event.getTouchMinor();
+						float tdx = x - centers[Integer.parseInt(""+keyChar)][0];
+						float tdy = y - centers[Integer.parseInt(""+keyChar)][1];
+						touchDist = (float)Math.sqrt(tdx*tdx + tdy*tdy);
+						avgDist = touchDist;
 					}else{ //same point just update stats
 						avgPressure = ((avgPressure*count) + event.getPressure());
 						avgMajorAxis = ((avgMajorAxis*count) + event.getTouchMajor());
 						avgMinorAxis = ((avgMinorAxis*count) + event.getTouchMinor());
+						float tdx = x - centers[Integer.parseInt(""+keyChar)][0];
+						float tdy = y - centers[Integer.parseInt(""+keyChar)][1];
+						touchDist = (float)Math.sqrt(tdx*tdx + tdy*tdy);
+						avgDist = (avgDist*count) + touchDist;
 						count++;
 						avgPressure = avgPressure/count;
 						avgMajorAxis = avgMajorAxis/count;
 						avgMinorAxis = avgMinorAxis/count;
+						avgDist = avgDist/count;
 					}
 
 				}
@@ -335,7 +385,7 @@ public class KeyPad extends View implements OnTouchListener {
 				}
 			}
 		}
-
+		invalidate();
 		return true;
 	}
 

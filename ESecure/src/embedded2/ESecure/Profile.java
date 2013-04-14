@@ -16,29 +16,30 @@ public class Profile implements Serializable{
 	private ArrayList<Double> majors;
 	private ArrayList<Double> minors;
 	private ArrayList<Double> gaps;
-	boolean testDuration, testPressure, testMajor,testMinor,testGaps;
+	private ArrayList<Double> dists;
+	boolean testDuration, testPressure, testMajor,testMinor,testGaps,testDist;
 	private int mode,count;
 	private float avgDuration;
 	private float avgPressure;
 	private float avgMajorAxis, avgMinorAxis; // major and minor axes of touch
-	private float avgGap; 
+	private float avgGap,avgDist; 
 
 	private float stdDuration;
 	private float stdPressure;
 	private float stdMajorAxis, stdMinorAxis; // major and minor axes of touch
-	private float stdGap; 
+	private float stdGap,stdDist; 
 
 	private float cvDuration;
 	private float cvPressure;
 	private float cvMajorAxis, cvMinorAxis;
 	private float cvOrientation;
-	private float cvGaps;
+	private float cvGaps,cvDist;
 
 	private float weightDuration;
 	private float weightPressure;
 	private float weightMajorAxis, weightMinorAxis;
 	private float weightOrientation;
-	private float weightGaps;
+	private float weightGaps,weightDist;
 
 	private float maxScore;
 
@@ -49,6 +50,7 @@ public class Profile implements Serializable{
 		majors = new ArrayList<Double>();
 		minors = new ArrayList<Double>();
 		gaps = new ArrayList<Double>();
+		dists = new ArrayList<Double>();
 		//history.add(first);
 		count = 0;
 	}
@@ -62,6 +64,7 @@ public class Profile implements Serializable{
 			majors.addAll(newAttempt.getMajors());
 			minors.addAll(newAttempt.getMinors());
 			gaps.addAll(newAttempt.getGaps());
+			dists.addAll(newAttempt.getDists());
 			this.updateStats();
 			return true;
 		}else if (newAttempt.getCode().toString().equals(history.get(count - 1).getCode().toString())) {
@@ -77,6 +80,7 @@ public class Profile implements Serializable{
 					majors.addAll(newAttempt.getMajors());
 					minors.addAll(newAttempt.getMinors());
 					gaps.addAll(newAttempt.getGaps());
+					dists.addAll(newAttempt.getDists());
 					count++;
 					this.updateStats();
 					return true;
@@ -93,7 +97,7 @@ public class Profile implements Serializable{
 
 					double [] sample1 = new double[durations.size()];
 					double [] sample2 = new double[newAttempt.getPoints().size()];
-					double alpha = .1;
+					double alpha = .05;
 					for(int i = 0; i < sample1.length; i++){
 						sample1[i] = durations.get(i).doubleValue();
 					}
@@ -126,6 +130,14 @@ public class Profile implements Serializable{
 						sample2[i] = newAttempt.getMinors().get(i).doubleValue();
 					}
 					testMinor = TTest.tTest(sample1,sample2,alpha);
+					
+					for(int i = 0; i < sample1.length; i++){
+						sample1[i] = dists.get(i).doubleValue();
+					}
+					for(int i = 0; i < sample2.length; i++){
+						sample2[i] = newAttempt.getDists().get(i).doubleValue();
+					}
+					testDist = TTest.tTest(sample1,sample2,alpha);
 
 					sample1 = new double[gaps.size()];
 					sample2 = new double[newAttempt.getGaps().size()];
@@ -144,6 +156,7 @@ public class Profile implements Serializable{
 					score += weightMinorAxis*(testMajor?0:1);
 					score += weightMajorAxis*(testMajor?0:1);
 					score += weightGaps*(testGaps?0:1);
+					score += weightDist*(testDist?0:1);
 					Log.v("DBUG","score: "+score);
 					Log.v("DBUG","maxscore: "+maxScore);
 					if(score >= 0.5*maxScore){
@@ -153,6 +166,7 @@ public class Profile implements Serializable{
 						majors.addAll(newAttempt.getMajors());
 						minors.addAll(newAttempt.getMinors());
 						gaps.addAll(newAttempt.getGaps());
+						dists.addAll(newAttempt.getDists());
 						int size = history.get(0).getPoints().size();
 						//Log.v("SIZES", "total: " + durations.size() + "attempt: " + history.get(0).getPoints().size());
 						for(int i = 0; i < size; i++){
@@ -181,13 +195,14 @@ public class Profile implements Serializable{
 	}
 
 	private void updateStats(){
-		float sumDuration = 0, sumPressure = 0, sumMajorAxis = 0, sumMinorAxis = 0,sumGaps = 0;
+		float sumDuration = 0, sumPressure = 0, sumMajorAxis = 0, sumMinorAxis = 0,sumGaps = 0,sumDist = 0;
 		int size = durations.size();
 		for (int i = 0; i < size; i++) {
 			sumDuration += durations.get(i);
 			sumPressure += pressures.get(i);
 			sumMajorAxis += majors.get(i);
 			sumMinorAxis += minors.get(i);
+			sumDist += dists.get(i);
 		}
 
 		for(int i = 0; i < gaps.size(); i++){
@@ -197,8 +212,9 @@ public class Profile implements Serializable{
 		avgPressure = sumPressure / size;
 		avgMajorAxis = sumMajorAxis / size;
 		avgMinorAxis = sumMinorAxis / size;
+		avgDist = sumDist/size;
 		avgGap = sumGaps/gaps.size();
-		sumDuration = sumPressure = sumMajorAxis = sumMinorAxis = 0.0f;
+		sumDuration = sumPressure = sumMajorAxis = sumMinorAxis = sumDist = 0.0f;
 		for (int i = 0; i < size; i++) {
 			sumDuration += (durations.get(i) - avgDuration)
 					* (durations.get(i) - avgDuration);
@@ -208,6 +224,7 @@ public class Profile implements Serializable{
 					* (majors.get(i) - avgMajorAxis);
 			sumMinorAxis += (minors.get(i) - avgMinorAxis)
 					* (minors.get(i) - avgMinorAxis);
+			sumDist += (dists.get(i) - avgDist)*(dists.get(i) - avgDist);
 		}
 
 		for(int i = 0; i < gaps.size(); i++){
@@ -218,6 +235,7 @@ public class Profile implements Serializable{
 		stdPressure = (float) Math.sqrt(sumPressure / size);
 		stdMajorAxis = (float) Math.sqrt(sumMajorAxis / size);
 		stdMinorAxis = (float) Math.sqrt(sumMinorAxis / size);
+		stdDist = (float)Math.sqrt(sumDist/size);
 		stdGap = (float)Math.sqrt(sumGaps/gaps.size());
 
 
@@ -225,6 +243,7 @@ public class Profile implements Serializable{
 		cvPressure = stdPressure/avgPressure;
 		cvMajorAxis = stdMajorAxis/avgMajorAxis;
 		cvMinorAxis = stdMinorAxis/avgMinorAxis;
+		cvDist = stdDist/avgDist;
 		cvGaps = stdGap/avgGap;
 		float sumCv = cvDuration + cvPressure + cvMajorAxis + cvMinorAxis + cvGaps;
 		//		Log.v("DBUG","cvDuration: "+cvDuration);
@@ -234,6 +253,7 @@ public class Profile implements Serializable{
 		weightPressure = cvPressure/sumCv;
 		weightMajorAxis = cvMajorAxis/sumCv;
 		weightMinorAxis = cvMinorAxis/sumCv;
+		weightDist = cvDist/sumCv;
 		weightGaps = cvGaps/sumCv;
 		//		Log.v("DBUG", "sumCv: "+sumCv);
 		weightDuration = 1.0f/weightDuration;
@@ -241,6 +261,7 @@ public class Profile implements Serializable{
 		weightMajorAxis = 1.0f/weightMajorAxis;
 		weightMinorAxis = 1.0f/weightMinorAxis;
 		weightOrientation = 1.0f/weightOrientation;
+		weightDist = 1.0f/weightDist;
 		weightGaps = 1.0f/weightGaps;
 
 		if(stdDuration==0){
@@ -255,12 +276,15 @@ public class Profile implements Serializable{
 		if(stdMinorAxis==0){
 			weightMinorAxis=0;
 		}
+		if(stdDist==0){
+			weightDist=0;
+		}
 		if(stdGap==0){
 			weightGaps=0;
 		}
 
 		maxScore = weightDuration + weightPressure + weightMajorAxis + 
-				weightMinorAxis +weightGaps;
+				weightMinorAxis +weightGaps + weightDist;
 		Log.v("DBUG","MAX SCORE: "+maxScore);
 
 

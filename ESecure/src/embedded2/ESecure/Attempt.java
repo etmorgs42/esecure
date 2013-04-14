@@ -14,6 +14,7 @@ public class Attempt implements Serializable{
 	private ArrayList<Double> majors;
 	private ArrayList<Double> minors;
 	private ArrayList<Double> gaps;
+	private ArrayList<Double> dists;
 	private StringBuilder code;
 	private int count,mode;
 //	private float avgGaps;
@@ -33,10 +34,12 @@ public class Attempt implements Serializable{
 		majors = new ArrayList<Double>();
 		minors = new ArrayList<Double>();
 		gaps = new ArrayList<Double>();
+		dists = new ArrayList<Double>();
 		durations.add(Double.valueOf(first.getDuration()));
 		pressures.add(Double.valueOf(first.getPressure()));
 		majors.add(Double.valueOf(first.getMajorAxis()));
 		minors.add(Double.valueOf(first.getMinorAxis()));
+		dists.add(Double.valueOf(first.getDist()));
 		code = new StringBuilder();
 		points.add(first);
 		code.append(first.getKey());
@@ -50,6 +53,7 @@ public class Attempt implements Serializable{
 		pressures.add(Double.valueOf(newPoint.getPressure()));
 		majors.add(Double.valueOf(newPoint.getMajorAxis()));
 		minors.add(Double.valueOf(newPoint.getMinorAxis()));
+		dists.add(Double.valueOf(newPoint.getDist()));
 		gaps.add(Double.valueOf((double)(points.get(count).getStart()- points.get(count - 1).getStart())));
 		if(mode == 1){
 			code.append(newPoint.getKey());
@@ -85,6 +89,10 @@ public class Attempt implements Serializable{
 	
 	public ArrayList<Double> getGaps(){
 		return gaps;
+	}
+	
+	public ArrayList<Double> getDists(){
+		return dists;
 	}
 	
 	public int getMode(){
