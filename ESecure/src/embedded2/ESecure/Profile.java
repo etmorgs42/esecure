@@ -66,12 +66,14 @@ public class Profile implements Serializable{
 			gaps.addAll(newAttempt.getGaps());
 			dists.addAll(newAttempt.getDists());
 			this.updateStats();
+			mode = newAttempt.getMode();
 			return true;
 		}else if (newAttempt.getCode().toString().equals(history.get(count - 1).getCode().toString())) {
 			if (count < 10) {
-				if(count == 0){
-					mode = newAttempt.getMode();
-				}
+				Log.v("DBUG",newAttempt.getMode()+"="+mode);
+//				if(count == 0){
+//					mode = newAttempt.getMode();
+//				}
 				if(newAttempt.getMode() == mode){
 					//				Log.v("CODE","new");
 					history.add(newAttempt);
@@ -85,6 +87,7 @@ public class Profile implements Serializable{
 					this.updateStats();
 					return true;
 				}else{
+					Log.v("DBUG","Mode does not match...fuck");
 					return false;
 				}
 			} else {
@@ -190,7 +193,7 @@ public class Profile implements Serializable{
 				}
 			}
 		} else {
-			Log.v("CODE","mismatch");
+			Log.v("DBUG","code mismatch");
 			return false;
 		}
 	}
