@@ -68,7 +68,7 @@ public class ESecure extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		k.finish();
+		k.save();
 		
 	}
 
@@ -87,7 +87,7 @@ public class ESecure extends Activity {
 		case R.id.color_settings:
 			return true;
 		case R.id.exit:
-			k.finish();
+			k.save();
 			System.exit(0);
 		case R.id.new_pass:
 			k.newPassword();

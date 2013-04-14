@@ -87,5 +87,9 @@ public class Attempt implements Serializable{
 		return gaps;
 	}
 	
+	public int getMode(){
+		return mode;
+	}
+	
 	
 }
